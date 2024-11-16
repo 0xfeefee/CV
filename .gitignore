@@ -1,0 +1,11 @@
+
+# Ignore:
+bin/*
+scripts/*
+docs/profiler/*
+
+# Exceptions:
+!docs/profiler/.gitkeep
+!bin/.gitkeep
+!vendor/.gitkeep
+!build/.gitkeep
