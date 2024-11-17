@@ -1,8 +1,8 @@
 
 # Ignore:
 bin/*
-scripts/*
 docs/profiler/*
+.w_scripts/
 
 # Exceptions:
 !docs/profiler/.gitkeep
