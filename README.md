@@ -1,4 +1,4 @@
-# CV (v0.1)
+# CV (v0.2.0)
 This is just a basic demo of programming skills, not a real product.
 
 ## Idea (subject to change)
@@ -16,9 +16,23 @@ This is just a basic demo of programming skills, not a real product.
 - [src/](./src): all project source files.
 - [vendor/](./vendor): all 3rd party source code and libraries.
 
+### Supported platforms
+At this moment the only supported platform is 64bit Windows, but project will work on 64 bit
+Linux too. *Mac support is not planned because I do not own a Mac!*
+
 ### Scripts
 - [scripts/config.bat](./scripts/config.bat): Generates the build files with respect to the
-given configuration variables.
+given configuration variables:
+	* `BUILD_TYPE`: valid options are `{ Debug, Release }`.
+	* `BUILD_COMPILER`: valid options are: `{ MSVC, Clang, GCC }`.
+	* `BUILD_ENABLE_LOGS`: valid options are `{ 0, 1 }`, if enabled build will emit messages,
+	otherwise it will be silent.
+	* `PROJECT_NAME`: name of the project, also name of the executable, if `BUILD_TYPE` is set
+	to `Debug` executable name will be formatted as follows: `PROJECT_NAME__Debug`.
+	* `PROJECT_ENABLE_LOGS`: valid options are `{ 0, 1 }`, if enabled logging utilities will work
+	as expected, otherwise they expand to no-op.
+	* `PROJECT_ENGINE_BACKEND`: valid options are `{ Raylib, DirectX }`, allows for selection of
+	engine backend (implementation).
 - [scripts/build.bat](./scripts/build.bat): Builds the project, must run `config` first!
 - [scripts/run.bat](./scripts/run.bat): Runs the project.
 

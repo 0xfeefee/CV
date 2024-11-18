@@ -1,9 +1,9 @@
 
+#include <2d_engine/2d_engine.hpp>
 using namespace cv;
 
 int
 main(int argc, char* argv[]) {
-    log_error(PROJECT_INFO_STRING_FULL);
-    ERROR_IF(42 == 42, "I guess it's meant to break");
+    initialize_and_start({});
     return 0;
 }

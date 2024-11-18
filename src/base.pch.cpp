@@ -1,5 +1,5 @@
 
-// Internal dependencies:
+// Dependencies (3rd party):
 #include <chrono>
 #include <ratio>
 
@@ -19,7 +19,7 @@ namespace cv {
 	static_assert(sizeof(f32) == 4);
 	static_assert(sizeof(f64) == 8);
 
-	// @temporary: 64bit arch only
+	// @temporary: 64 bit arch only:
 	static_assert(sizeof(u8*) == 8);
 }
 
@@ -27,6 +27,7 @@ namespace cv {
 ## Logger implementation
 */
 #ifdef PROJECT_ENABLE_LOGS
+	// Dependencies (3rd party):
 	#include <spdlog/spdlog.h>
 	#include <spdlog/sinks/basic_file_sink.h>
 	#include <spdlog/sinks/stdout_color_sinks.h>

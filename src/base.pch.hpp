@@ -7,8 +7,8 @@
 	utilities and language features used. It's not perfect, but it declutters a lot of files.
 
 	Since we are doing more modern flavor of C++ we have to churn through a lot of templated code which may
-	slow the build down. For this project we tolerate builds under 3 seconds, after that we introduce unity
-	builds ...
+	slow the build down. For this project we tolerate builds under 3 seconds (when compiled with MSVC), after
+	that we introduce unity builds ...
 */
 
 /*
@@ -27,11 +27,13 @@ using Shared = std::shared_ptr<T>;
 /*
 ## Utility macros
 
+	Defined here because implementation of certain functions depend on them.
+
 	- { EXPECT } is an assert which is a bit nicer to use.
 	- { ERORR_IF } is essentially EXPECT negated, exists for semantic reasons.
-	- { WARN_IF } raises a warning when the condition is fullfilled.
+	- { WARN_IF } raises a warning when the condition is fulfilled.
 */
-#if PROJECT_BUILD_DEBUG
+#if PROJECT_ENABLE_LOGS
 	#define EXPECT(condition, ...)   if (!(condition)) cv::terminate(__FILE__, __LINE__, #condition, __VA_ARGS__)
 	#define ERROR_IF(condition, ...) if ((condition))  cv::terminate(__FILE__, __LINE__, #condition, __VA_ARGS__)
 #else
@@ -171,16 +173,21 @@ namespace cv {
 	}
 #else // PROJECT_ENABLE_LOGS=0
 	/*
-		Logger functions expand to nothing when logger is disabled.
+		Logger functions expand to no-op when logger is disabled.
 	*/
 	namespace cv {
-		// (void(0))
-		static inline void
-		do_nothing() {}
 
-		#define log(...) 		do_nothing()
-		#define log_warn(...) 	do_nothing()
-		#define log_error(...) 	do_nothing()
+		template <typename ...Args>
+		inline void
+		log(cstr_t fmt, Args&&... args) {}
+
+		template <typename ...Args>
+		inline void
+		log_warn(cstr_t fmt, Args&&... args) {}
+
+		template <typename ...Args>
+		inline void
+		log_error(cstr_t fmt, Args&&... args) {}
 	}
 
 #endif // PROJECT_ENABLE_LOGS

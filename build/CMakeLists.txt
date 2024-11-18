@@ -6,12 +6,14 @@
 
 cmake_minimum_required(VERSION 3.20)
 
+##
 ## Command line arguments:
-set(PROJECT_NAME    	  "My_Project" CACHE STRING "Project name")
-set(PROJECT_ENABLE_LOGS   ON 		   CACHE STRING "Enable project logs")
-set(BUILD_TYPE 			  "Debug"      CACHE STRING "Build type { Debug, Release }")
-set(BUILD_COMPILER        "Clang"      CACHE STRING "Compiler { MSVC, Clang, GCC }")
-set(BUILD_ENABLE_LOGS     ON 		   CACHE STRING "Enable build logs")
+set(PROJECT_NAME    	    "My_Project" CACHE STRING "Project name")
+set(PROJECT_ENABLE_LOGS     ON 		   CACHE STRING "Enable project logs")
+set(PROJECT_ENGINE_BACKEND  "Raylib"    CACHE STRING "Engine backend { Raylib, DirectX }")
+set(BUILD_TYPE 			    "Debug"      CACHE STRING "Build type { Debug, Release }")
+set(BUILD_COMPILER          "Clang"      CACHE STRING "Compiler { MSVC, Clang, GCC }")
+set(BUILD_ENABLE_LOGS       ON 		   CACHE STRING "Enable build logs")
 
 ## Switches:
 set(BUILD_TYPE__DEBUG       OFF)
@@ -120,14 +122,14 @@ add_compile_definitions(
 	PROJECT_INFO_STRING_FULL="${PROJECT_INFO_STRING_FULL}"
 )
 
+## Enable logging utilities:
 if (PROJECT_ENABLE_LOGS)
 	add_compile_definitions(PROJECT_ENABLE_LOGS=1)
 endif()
 
-## Packages:
-find_package(OpenGL REQUIRED)
 
-## 3rd party:
+##
+## Add: spdlog
 set(VENDOR_INCLUDE_DIRS
 	"${VENDOR}/spdlog-v1.14.1/include"
 )
@@ -138,6 +140,9 @@ set(VENDOR_INCLUDE_DIRS
 set(SOURCE_FILES
 	${SRC}/main.cpp
 	${SRC}/base.pch.cpp
+	${SRC}/2d_engine/2d_engine.cpp
+	# @hack: just use GLOB instead or write it out and list(APPEND ...), right now it's not validated!
+	${SRC}/2d_engine/backends/${PROJECT_ENGINE_BACKEND}/${PROJECT_ENGINE_BACKEND}_backend.cpp
 )
 
 add_executable(${BUILD_EXECUTABLE_NAME}
