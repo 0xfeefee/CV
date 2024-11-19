@@ -19,8 +19,8 @@ namespace cv {
     */
     struct Engine_Context {
         rl::Color clear_color;
-        bool should_run;
         s32x2 window_size;
+        bool should_run;
 
         Engine_Context()
         : clear_color({45, 45, 45, 255}), should_run(true), window_size({0, 0}) {

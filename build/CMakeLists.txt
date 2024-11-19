@@ -165,6 +165,7 @@ set(SOURCE_FILES
 	${SRC}/main.cpp
 	${SRC}/base.pch.cpp
 	${SRC}/2d_engine/2d_engine.cpp
+	${SRC}/2d_engine/ecs.cpp
 )
 
 ## Add the current backend files:

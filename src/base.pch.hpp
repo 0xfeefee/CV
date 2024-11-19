@@ -41,6 +41,7 @@ using Shared = std::shared_ptr<T>;
 	#define ERROR_IF(condition, ...)
 #endif
 
+
 namespace cv {
 
 	/*
