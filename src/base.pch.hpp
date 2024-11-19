@@ -88,7 +88,7 @@ namespace cv {
 		A lazy helper function useful for creating "context", this instance is shared between threads.
 	*/
 	template <typename T>
-	Unique<T>& get_instance() {
+	Unique<T>& get_context() {
 		static Unique<T> instance = std::make_unique<T>();
 		ERROR_IF(!instance);
 
@@ -149,7 +149,7 @@ namespace cv {
 		template <typename ...Args>
 		void
 		log(cstr_t fmt, Args&&... args) {
-			get_instance<Log_Context>()->info_logger->info(fmt, std::forward<Args>(args)...);
+			get_context<Log_Context>()->info_logger->info(fmt, std::forward<Args>(args)...);
 		}
 
 		/*
@@ -159,7 +159,7 @@ namespace cv {
 		template <typename ...Args>
 		void
 		log_warn(cstr_t fmt, Args&&... args) {
-			get_instance<Log_Context>()->warn_logger->warn(fmt, std::forward<Args>(args)...);
+			get_context<Log_Context>()->warn_logger->warn(fmt, std::forward<Args>(args)...);
 		}
 
 		/*
@@ -168,7 +168,7 @@ namespace cv {
 		template <typename ...Args>
 		void
 		log_error(cstr_t fmt, Args&&... args) {
-			get_instance<Log_Context>()->warn_logger->error(fmt, std::forward<Args>(args)...);
+			get_context<Log_Context>()->warn_logger->error(fmt, std::forward<Args>(args)...);
 		}
 	}
 #else // PROJECT_ENABLE_LOGS=0

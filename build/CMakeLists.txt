@@ -9,11 +9,11 @@ cmake_minimum_required(VERSION 3.20)
 ##
 ## Command line arguments:
 set(PROJECT_NAME    	    "My_Project" CACHE STRING "Project name")
-set(PROJECT_ENABLE_LOGS     ON 		   CACHE STRING "Enable project logs")
-set(PROJECT_ENGINE_BACKEND  "Raylib"    CACHE STRING "Engine backend { Raylib, DirectX }")
+set(PROJECT_ENABLE_LOGS     ON 		     CACHE STRING "Enable project logs")
+set(PROJECT_ENGINE_BACKEND  "Raylib"     CACHE STRING "Engine backend { Raylib, DirectX }")
 set(BUILD_TYPE 			    "Debug"      CACHE STRING "Build type { Debug, Release }")
 set(BUILD_COMPILER          "Clang"      CACHE STRING "Compiler { MSVC, Clang, GCC }")
-set(BUILD_ENABLE_LOGS       ON 		   CACHE STRING "Enable build logs")
+set(BUILD_ENABLE_LOGS       ON 		     CACHE STRING "Enable build logs")
 
 ## Switches:
 set(BUILD_TYPE__DEBUG       OFF)
@@ -35,6 +35,27 @@ set(PROJECT_INFO_STRING_FULL) ## Same as { PROJECT_INFO_STRING } but with added 
 ## Set CMake state:
 set(CMAKE_BUILD_TYPE   ${BUILD_TYPE})
 
+##
+## @temporary: Validate engine backend choice
+set(_VALID_ENGINE_BACKENDS "Raylib" "DirectX")
+set(_ENGINE_BACKEND_VALID FALSE)
+foreach(backend IN LISTS _VALID_ENGINE_BACKENDS)
+	if (PROJECT_ENGINE_BACKEND STREQUAL backend)
+		set(_ENGINE_BACKEND_VALID TRUE)
+		break()
+	endif()
+endforeach()
+
+if (NOT _ENGINE_BACKEND_VALID)
+	message(
+		FATAL_ERROR
+		"Invalid PROJECT_ENGINE_BACKEND given: ${PROJECT_ENGINE_BACKEND}, "
+		"valid options are: ${_VALID_ENGINE_BACKENDS}"
+	)
+endif()
+
+
+##
 ## C++ compiler configuration:
 if (BUILD_COMPILER STREQUAL "MSVC")
 	set(CMAKE_CXX_COMPILER 		"cl")
@@ -52,7 +73,7 @@ elseif (BUILD_COMPILER STREQUAL "GCC")
 	set(CMAKE_CXX_FLAGS_RELEASE "/O3")
 	set(CMAKE_C_COMPILER        "gcc")
 else()
-	message(FATAL_ERORR "Unsupported compiler: ${BUILD_COMPILER}, valid options are: { MSVC, Clang, GCC }")
+	message(FATAL_ERROR "Unsupported compiler: ${BUILD_COMPILER}, valid options are: { MSVC, Clang, GCC }")
 endif()
 
 ## Log verbosity:
@@ -66,10 +87,9 @@ endif()
 ##
 ## Create the project:
 project(${PROJECT_NAME}
-	VERSION 0.2.0
+	VERSION 0.3.0
 	LANGUAGES C CXX
 )
-
 
 ## Basic config
 set(CMAKE_CXX_STANDARD     17)
@@ -129,11 +149,20 @@ endif()
 
 
 ##
-## Add: spdlog
+## Add: spdlog, raylib
 set(VENDOR_INCLUDE_DIRS
-	"${VENDOR}/spdlog-v1.14.1/include"
+	${VENDOR}/spdlog-v1.14.1/include
+	${VENDOR}/raylib-v5.0/include
 )
 
+if (BUILD_PLATFORM__WIN64)
+	set(VENDOR_LIBRARIES
+		${VENDOR}/raylib-v5.0/lib/raylib.lib
+		winmm
+	)
+else()
+	message(FATAL_ERROR "Raylib backend: build path not implemented for this platform: ${BUILD_PLATFORM}")
+endif()
 
 ##
 ## Create an executable:
@@ -141,9 +170,11 @@ set(SOURCE_FILES
 	${SRC}/main.cpp
 	${SRC}/base.pch.cpp
 	${SRC}/2d_engine/2d_engine.cpp
-	# @hack: just use GLOB instead or write it out and list(APPEND ...), right now it's not validated!
-	${SRC}/2d_engine/backends/${PROJECT_ENGINE_BACKEND}/${PROJECT_ENGINE_BACKEND}_backend.cpp
 )
+
+## Add the current backend files:
+file(GLOB_RECURSE _PROJECT_BACKEND_FILES "${SRC}/2d_engine/backends/${PROJECT_ENGINE_BACKEND}/*.cpp")
+list(APPEND SOURCE_FILES ${_PROJECT_BACKEND_FILES})
 
 add_executable(${BUILD_EXECUTABLE_NAME}
 	${SOURCE_FILES}
@@ -158,6 +189,11 @@ target_include_directories(${BUILD_EXECUTABLE_NAME}
 target_precompile_headers(${BUILD_EXECUTABLE_NAME}
 	PRIVATE
 	${SRC}/base.pch.hpp
+)
+
+target_link_libraries(${BUILD_EXECUTABLE_NAME}
+	PRIVATE
+	${VENDOR_LIBRARIES}
 )
 
 

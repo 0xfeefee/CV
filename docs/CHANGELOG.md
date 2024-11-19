@@ -16,3 +16,8 @@
   is disabled.
 - 2024-11-18: Added the new config option `PROJECT_ENGINE_BACKEND` which allows selection of
   engine backend (implementation).
+
+## v0.3.0
+- 2024-11-19: Added the Raylib dependency, as submodule.
+- 2024-11-19: Implemented "Hello Window" with Raylib.
+- 2024-11-19: Renamed `get_instance` to `get_context` to better reflect it's intended use.

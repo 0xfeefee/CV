@@ -145,7 +145,7 @@ namespace cv {
 		*/
 		void
 		terminate(cstr_t file_name, int line, cstr_t condition_str, cstr_t message) {
-			Shared<spdlog::async_logger> logger = get_instance<Log_Context>()->warn_logger;
+			Shared<spdlog::async_logger> logger = get_context<Log_Context>()->warn_logger;
 
 			std::string format = (message == nullptr ? "* {} ({})\n* {}" : "* {} ({})\n* {}\n* {}");
 			logger->error(format, file_name, line, condition_str, message);

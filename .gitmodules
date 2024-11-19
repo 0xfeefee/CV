@@ -1,3 +1,6 @@
 [submodule "vendor/Win64/spdlog-v1.14.1"]
 	path = vendor/Win64/spdlog-v1.14.1
 	url = https://github.com/0xfeefee/spdlog-v1.14.1.git
+[submodule "vendor/Win64/raylib-v5.0"]
+	path = vendor/Win64/raylib-v5.0
+	url = https://github.com/0xfeefee/raylib-v5.0

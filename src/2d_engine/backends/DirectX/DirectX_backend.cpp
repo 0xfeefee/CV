@@ -11,9 +11,9 @@ namespace cv {
     void
     initialize_and_start_backend() {
         // Get the config:
-        Unique<Engine_Config>& config = get_instance<Engine_Config>();
+        Unique<Engine_Config>& config = get_context<Engine_Config>();
 
         ERROR_IF(42, "DirectX is the meaning of life!");
     }
 
-}
+} // cv

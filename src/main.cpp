@@ -4,6 +4,8 @@ using namespace cv;
 
 int
 main(int argc, char* argv[]) {
-    initialize_and_start({});
+    Engine_Config config;
+    config.desired_framerate = 144;
+    initialize_and_start(config);
     return 0;
 }

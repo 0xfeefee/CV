@@ -20,6 +20,11 @@ This is just a basic demo of programming skills, not a real product.
 At this moment the only supported platform is 64bit Windows, but project will work on 64 bit
 Linux too. *Mac support is not planned because I do not own a Mac!*
 
+Tested:
+- [X] 64bit Windows + MSVC
+- [X] 64bit Windows + Clang
+- [ ] 64bit Linux (Ubuntu) + GCC
+
 ### Scripts
 - [scripts/config.bat](./scripts/config.bat): Generates the build files with respect to the
 given configuration variables:
@@ -39,6 +44,7 @@ given configuration variables:
 ### Dependencies
 In order to make builds as pleasant as possible all dependencies are located within the project
 as a git submodule. Exact version of every dependency is hosted as a "fork" to ensure it's easy
-to find:
+to find, I could have used tags for specific versions but this way its less error-prone:
 
 - [spdlog-v1.14.1](https://github.com/0xfeefee/spdlog-v1.14.1)
+- [raylib-v5.0](https://github.com/0xfeefee/raylib-v5.0)

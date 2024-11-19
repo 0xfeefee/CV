@@ -16,7 +16,7 @@ namespace cv {
     */
     void
     initialize_and_start(Engine_Config config) {
-        auto& validated_config = get_instance<Engine_Config>();
+        auto& validated_config = get_context<Engine_Config>();
         *validated_config = config;
 
         if (config.window_title.empty()) {
@@ -51,4 +51,4 @@ namespace cv {
         initialize_and_start_backend();
     }
 
-}
+} // cv
