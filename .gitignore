@@ -3,6 +3,7 @@
 bin/*
 docs/profiler/*
 .w_scripts/
+.clangd
 
 # Exceptions:
 !docs/profiler/.gitkeep

@@ -22,7 +22,6 @@ Linux too. *Mac support is not planned because I do not own a Mac!*
 
 Tested:
 - [X] 64bit Windows + MSVC
-- [X] 64bit Windows + Clang
 - [ ] 64bit Linux (Ubuntu) + GCC
 
 ### Scripts

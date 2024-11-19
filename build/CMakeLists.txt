@@ -12,7 +12,6 @@ set(PROJECT_NAME    	    "My_Project" CACHE STRING "Project name")
 set(PROJECT_ENABLE_LOGS     ON 		     CACHE STRING "Enable project logs")
 set(PROJECT_ENGINE_BACKEND  "Raylib"     CACHE STRING "Engine backend { Raylib, DirectX }")
 set(BUILD_TYPE 			    "Debug"      CACHE STRING "Build type { Debug, Release }")
-set(BUILD_COMPILER          "Clang"      CACHE STRING "Compiler { MSVC, Clang, GCC }")
 set(BUILD_ENABLE_LOGS       ON 		     CACHE STRING "Enable build logs")
 
 ## Switches:
@@ -54,28 +53,6 @@ if (NOT _ENGINE_BACKEND_VALID)
 	)
 endif()
 
-
-##
-## C++ compiler configuration:
-if (BUILD_COMPILER STREQUAL "MSVC")
-	set(CMAKE_CXX_COMPILER 		"cl")
-	set(CMAKE_CXX_FLAGS_DEBUG 	"/Od /WX /EHs")
-	set(CMAKE_CXX_FLAGS_RELEASE "/O3 /EHs")
-	set(CMAKE_C_COMPILER        "cl")
-elseif (BUILD_COMPILER STREQUAL "Clang")
-	set(CMAKE_CXX_COMPILER 		"clang++")
-	set(CMAKE_CXX_FLAGS_DEBUG   "-g")
-	set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-	set(CMAKE_C_COMPILER        "clang")
-elseif (BUILD_COMPILER STREQUAL "GCC")
-	set(CMAKE_CXX_COMPILER 	  	"g++")
-	set(CMAKE_CXX_FLAGS_DEBUG 	"-O0 -g -Wall")
-	set(CMAKE_CXX_FLAGS_RELEASE "/O3")
-	set(CMAKE_C_COMPILER        "gcc")
-else()
-	message(FATAL_ERROR "Unsupported compiler: ${BUILD_COMPILER}, valid options are: { MSVC, Clang, GCC }")
-endif()
-
 ## Log verbosity:
 if (BUILD_ENABLE_LOGS)
 	set(CMAKE_MESSAGE_LOG_LEVEL "VERBOSE")
@@ -90,6 +67,24 @@ project(${PROJECT_NAME}
 	VERSION 0.3.0
 	LANGUAGES C CXX
 )
+
+
+##
+## C++ compiler configuration:
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+	set(CMAKE_CXX_COMPILER 		"cl")
+	set(CMAKE_CXX_FLAGS_DEBUG 	"/Od /WX /EHs")
+	set(CMAKE_CXX_FLAGS_RELEASE "/O3 /EHs")
+	set(CMAKE_C_COMPILER        "cl")
+elseif (CMAKE_CXX_COMPILER STREQUAL "GCC")
+	set(CMAKE_CXX_COMPILER 	  	"g++")
+	set(CMAKE_CXX_FLAGS_DEBUG 	"-O0 -g -Wall")
+	set(CMAKE_CXX_FLAGS_RELEASE "/O3")
+	set(CMAKE_C_COMPILER        "gcc")
+else()
+	message(FATAL_ERROR "Unsupported compiler: ${CMAKE_CXX_COMPILER_ID}, valid options are: { MSVC, GCC }")
+endif()
+
 
 ## Basic config
 set(CMAKE_CXX_STANDARD     17)

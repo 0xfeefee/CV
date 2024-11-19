@@ -8,7 +8,6 @@
 
 // Dependencies (3rd_party):
 namespace rl {
-    //@todo: Fix clashes with { Windows.h } when compiling with clang.
     #include <raylib.h>
 }
 

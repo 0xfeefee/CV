@@ -21,3 +21,5 @@
 - 2024-11-19: Added the Raylib dependency, as submodule.
 - 2024-11-19: Implemented "Hello Window" with Raylib.
 - 2024-11-19: Renamed `get_instance` to `get_context` to better reflect it's intended use.
+- 2024-11-19: Dropped support for `Clang` compiler in order to make development easier at this
+  stage. We can re-introduce it later.
