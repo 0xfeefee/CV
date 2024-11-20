@@ -16,6 +16,12 @@
 */
 #include <string>
 #include <memory>
+#include <vector>
+#include <deque>
+#include <set>
+#include <unordered_map>
+#include <typeindex>
+
 
 template <typename T>
 using Unique = std::unique_ptr<T>;

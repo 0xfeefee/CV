@@ -23,3 +23,5 @@
 - 2024-11-19: Renamed `get_instance` to `get_context` to better reflect it's intended use.
 - 2024-11-19: Dropped support for `Clang` compiler in order to make development easier at this
   stage. We can re-introduce it later.
+- 2024-11-20: Added the stub of a basic ECS.
+
