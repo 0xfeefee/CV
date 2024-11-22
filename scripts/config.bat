@@ -7,8 +7,7 @@ if exist bin\\CMakeFiles rd /s /q "bin\\CMakeFiles
 :: Then generate all the build files:
 cmake -S build/ -B bin -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ^
 	  -DBUILD_TYPE="Debug" ^
-	  -DBUILD_COMPILER="MSVC" ^
 	  -DBUILD_ENABLE_LOGS=1 ^
 	  -DPROJECT_NAME="CV" ^
 	  -DPROJECT_ENABLE_LOGS=1 ^
-	  -DPROJECT_ENGINE_BACKEND="DirectX"
+	  -DPROJECT_ENGINE_BACKEND="Raylib"

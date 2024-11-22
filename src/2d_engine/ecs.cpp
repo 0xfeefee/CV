@@ -5,7 +5,47 @@
 namespace cv {
 
     /*
-    ## Impl system
+    ## Component_Mask: implementation
+    */
+
+    const u16
+    Component_Mask::get_value() const {
+        return value;
+    }
+
+    void
+    Component_Mask::reset() {
+        value = 0;
+    }
+
+    bool
+    Component_Mask::contains(const Component_Mask& other) const {
+        return (value & other.value) == other.value;
+    }
+
+
+    /*
+    ## Entity: implementation
+    */
+
+    bool
+    Entity::operator==(const Entity& other) const {
+        return id == other.id;
+    }
+
+    bool
+    Entity::operator<(const Entity& other) const {
+        return id < other.id;
+    }
+
+    bool
+    Entity::operator>(const Entity& other) const {
+        return id > other.id;
+    }
+
+
+    /*
+    ## Base_System: implementation
     */
 
     void
@@ -33,8 +73,9 @@ namespace cv {
 
 
     /*
-    ## Impl Registry
+    ## Registry: implementation
     */
+
     Entity
     Registry::create_entity() {
         int entity_id;

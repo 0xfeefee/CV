@@ -1,8 +1,11 @@
-
 #pragma once
+/*
+    Simple and somewhat naive ECS implementation, which should be good enough to handle the small games for
+    which this engine is built.
 
-#include <vector>
-
+    ECS supports up to { sizeof(Component_Mask) } unique component types and up to { N } entities...
+    @todo: set a hard limit on entity count.
+*/
 namespace cv {
 
     /*
@@ -11,7 +14,7 @@ namespace cv {
     */
     class Component_Mask {
     private:
-        u16 value = 0;
+        u8 value = 0;
 
     public:
         /*
@@ -35,29 +38,28 @@ namespace cv {
         /*
             Get the current mask value:
         */
-        inline const u16
-        get() const {
-            return value;
-        }
+        const u16
+        get_value() const;
 
         /*
             Resets the component signature, removing all the components.
         */
-        inline void
-        reset() {
-            value = 0;
-        }
+        void
+        reset();
 
         /*
             Check if given { Component_Mask } is contained within this mask.
         */
-        inline bool
-        contains(const Component_Mask& other) const {
-            return (value & other.value) == other.value;
-        }
+        bool
+        contains(const Component_Mask& other) const;
     };
 
-    constexpr int MAX_COMPONENTS = sizeof(Component_Mask) * 8;
+
+    /*
+        We should not need more than 32 different types of { Component } in order to cover all the feature this
+        engine needs.
+    */
+    constexpr int MAX_COMPONENT_TYPES = sizeof(Component_Mask) * 8;
 
 
     /*
@@ -71,26 +73,20 @@ namespace cv {
         ~Entity()                    = default;
 
         bool
-        operator ==(const Entity& other) const {
-            return id == other.id;
-        }
+        operator ==(const Entity& other) const;
 
         bool
-        operator <(const Entity& other) const {
-            return id < other.id;
-        }
+        operator <(const Entity& other) const;
 
         bool
-        operator >(const Entity& other) const {
-            return id > other.id;
-        }
+        operator >(const Entity& other) const;
     };
 
 
     /*
         Just an interface to make it possible to automatically generate unique id's for every component type.
 
-        For this we use a dirty trick in the subclass - Component, every generated version will increment the
+        For this we use a dirty trick in the subclass - { Component } every generated version will increment the
         { next_id } value by 1. One caveat here is that we cannot guarantee that a component type will have
         the same ID every time, but that does not matter for our use case.
     */
@@ -102,19 +98,20 @@ namespace cv {
     template <typename T>
     class Component: public Base_Component {
     public:
+        /*
+            This determines which bit in the { Component_Mask } is used represent the presence of this specific
+            component type { T }.
+        */
         static int
-        get_type_id() {
-            static const int id = next_id++;
-            ERROR_IF(id > MAX_COMPONENTS, "Maximum component count exceeded!");
-
-            return id;
-        }
+        get_type_id();
     };
 
 
     /*
-        A system simply keeps a collection of all the entities which meet the requirements and is open enough
-        to enable it to be used in any part of the frame/lifecycle.
+        A system simply keeps a collection of all the entities which meet the component requirements.
+
+        { Base_System } is purposefully open-ended to enable systems to be used in different ways or different
+        parts of the life-cycle.
     */
     class Base_System {
     protected:
@@ -139,105 +136,50 @@ namespace cv {
     /*
         Just an interface which enables us to use the Pool with different types of components later.
     */
-    class Base_Entity_Pool {
+    class Base_Pool {
     public:
-        virtual ~Base_Entity_Pool() {}
+        virtual ~Base_Pool() {}
 
         virtual void
         remove_entity_from_pool(int entity_id) = 0;
     };
 
     /*
-        Pool is just an abstraction over vector that we use in the Registry to store the entities which use
-        these things.
-
+        { Pool } is just an abstraction over vector that we use in the { Registry } to store the data.
         @todo: Simplify, reduce access time.
     */
     template <typename T>
-    class Entity_Pool: public Base_Entity_Pool {
+    class Pool: public Base_Pool {
     private:
         std::vector<T> data;
         int            size;
 
-        // @todo: simplify...
         std::unordered_map<int, int> entity_id_to_index;
         std::unordered_map<int, int> index_to_entity_id;
 
     public:
-        Entity_Pool(int capacity = 128): size(0) {
-            data.resize(capacity);
-        }
+        Pool(int capacity = 128);
 
-        virtual ~Entity_Pool() = default;
-
-        void
-        add(T object) {
-            data.push_back(object);
-        }
+        virtual
+        ~Pool() = default;
 
         void
-        set(int entity_id, T object) {
-            ERROR_IF(entity_id < 0);
-
-            // If this exists, just replace the object:
-            if (entity_id_to_index.find(entity_id) != entity_id_to_index.end()) {
-                int index = entity_id_to_index[entity_id];
-                data[index] = object;
-            } else {
-                // Otherwise create a new entry:
-                int index = size;
-                entity_id_to_index.emplace(entity_id, index);
-                index_to_entity_id.emplace(index, entity_id);
-
-                // If there's not enough capacity, double it:
-                if (index >= data.capacity()) {
-                    data.resize(size * 2);
-                }
-
-                data[index] = object;
-                size += 1;
-            }
-        }
+        add(T object);
 
         void
-        remove(int entity_id) {
-            ERROR_IF(size == 0, "The Pool is already empty!");
-
-            // Swap the removed and the last:
-            int index_of_removed    = entity_id_to_index[entity_id];
-            int index_of_last       = size - 1;
-            data[index_of_removed]  = data[index_of_last];
-
-            // Update the index-entity mappings:
-            int entity_id_of_last_element                   = index_to_entity_id[index_of_last];
-            entity_id_to_index[entity_id_of_last_element]   = index_of_removed;
-            index_to_entity_id[index_of_removed]            = entity_id_of_last_element;
-
-            // Shrink:
-            entity_id_to_index.erase(entity_id);
-            index_to_entity_id.erase(index_of_last);
-            size--;
-        }
+        set(int entity_id, T object);
 
         void
-        remove_entity_from_pool(int entity_id) override {
-            if (entity_id_to_index.find(entity_id) != entity_id_to_index.end()) {
-                remove(entity_id);
-            }
-        }
+        remove(int entity_id);
+
+        void
+        remove_entity_from_pool(int entity_id) override;
 
         T&
-        get(int entity_id) {
-            return static_cast<T&>(data[entity_id_to_index[entity_id]]);
-        }
+        get(int entity_id);
 
         T&
-        operator [](int index) {
-            ERROR_IF(index < 0);
-            ERROR_IF(index >= data.size());
-
-            return data[index];
-        }
+        operator [](int index);
     };
 
 
@@ -249,17 +191,18 @@ namespace cv {
         int num_entities = 0;
 
         /*
-            Each pool contains all the data for each component type, where { vector } index is the component
-            type and { Pool } index is the entity id.
+            Each pool contains all the data for each component type, where:
+            - { vector } index is the component type
+            - { Base_Pool } index is the entity id
         */
-        std::vector<Shared<Base_Entity_Pool>> component_pools;
+        std::vector<Shared<Base_Pool>> component_pools;
 
         /*
             Signatures per entity, where index is the entity id.
         */
         std::vector<Component_Mask> component_masks;
 
-        // Systems.
+        // All systems:
         std::unordered_map<std::type_index, Shared<Base_System>> systems;
 
         /*
@@ -287,7 +230,7 @@ namespace cv {
         create_entity();
 
         /*
-        ## Group management
+        ## Group management:
         */
 
         void
@@ -303,7 +246,7 @@ namespace cv {
         ungroup_entity(Entity entity);
 
         /*
-        ## Component management
+        ## Component management:
         */
 
         template <typename T_Component, typename ...T_Component_Args>
@@ -317,9 +260,6 @@ namespace cv {
 
         template <typename T_System, typename ...T_System_Args>
         void add_system(T_System_Args&& ...args);
-
-        template <typename T_System>
-        void remove_system();
 
         template <typename T_System>
         T_System& get_system() const;

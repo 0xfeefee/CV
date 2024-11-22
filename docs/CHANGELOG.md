@@ -24,4 +24,5 @@
 - 2024-11-19: Dropped support for `Clang` compiler in order to make development easier at this
   stage. We can re-introduce it later.
 - 2024-11-20: Added the stub of a basic ECS.
-
+- 2024-11-21: Refactored and tested the ECS.
+- 2024-11-21: Added the stub for front-end, Lua not ready to push yet...

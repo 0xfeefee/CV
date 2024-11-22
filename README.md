@@ -1,4 +1,4 @@
-# CV (v0.2.0)
+# CV (v0.3.0)
 This is just a basic demo of programming skills, not a real product.
 
 ## Idea (subject to change)
@@ -28,7 +28,6 @@ Tested:
 - [scripts/config.bat](./scripts/config.bat): Generates the build files with respect to the
 given configuration variables:
 	* `BUILD_TYPE`: valid options are `{ Debug, Release }`.
-	* `BUILD_COMPILER`: valid options are: `{ MSVC, Clang, GCC }`.
 	* `BUILD_ENABLE_LOGS`: valid options are `{ 0, 1 }`, if enabled build will emit messages,
 	otherwise it will be silent.
 	* `PROJECT_NAME`: name of the project, also name of the executable, if `BUILD_TYPE` is set

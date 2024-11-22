@@ -103,10 +103,10 @@ namespace cv {
 	}
 
 	/*
-		This is same as { get_instance } but this instance is not shared between threads.
+		This is same as { get_context } but this instance is not shared between threads.
 	*/
 	template <typename T>
-	Unique<T>& get_local_instance() {
+	Unique<T>& get_local_context() {
 		static thread_local Unique<T> instance = std::make_unique<T>();
 		ERROR_IF(!instance);
 
