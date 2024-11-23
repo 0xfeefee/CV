@@ -4,3 +4,9 @@
 [submodule "vendor/Win64/raylib-v5.0"]
 	path = vendor/Win64/raylib-v5.0
 	url = https://github.com/0xfeefee/raylib-v5.0
+[submodule "vendor/Win64/lua-v5.4.2"]
+	path = vendor/Win64/lua-v5.4.2
+	url = https://github.com/0xfeefee/lua-v5.4.2
+[submodule "vendor/Win64/sol2-v3.3.0"]
+	path = vendor/Win64/sol2-v3.3.0
+	url = https://github.com/0xfeefee/sol2-v3.3.0

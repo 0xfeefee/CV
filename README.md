@@ -1,4 +1,4 @@
-# CV (v0.3.0)
+# CV (v0.4.0)
 This is just a basic demo of programming skills, not a real product.
 
 ## Idea (subject to change)
