@@ -28,4 +28,6 @@
 - 2024-11-22: Added the stub for front-end, refactored ECS.
 
 ## v0.4.0
-- 2024-11-23: Added the `lua` and `sol` dependency.
+- 2024-11-23: Added the `Lua` and `sol` dependency.
+- 2024-11-24: Changed the build script to enable `frontend` selection, between: `{ Lua, Wren }`.
+- 2024-11-24: Implemented the basic `Lua` frontend.

@@ -5,6 +5,7 @@
 // Dependencies:
 #include <2d_engine/2d_engine.hpp>
 #include <2d_engine/backend_api.hpp>
+#include <2d_engine/frontend_hook.hpp>
 
 // Dependencies (3rd_party):
 namespace rl {
@@ -77,6 +78,9 @@ namespace cv {
         const f64 S_PER_FRAME = 1.0/config->desired_framerate;
         f64 last_elapsed_s    = rl::GetTime();
 
+        // Run user code to init/start the game:
+        frontend_start();
+
         while (context->should_run) {
             // Wait out the extra time
             f64 s_to_wait = S_PER_FRAME - (rl::GetTime() - last_elapsed_s);
@@ -89,6 +93,9 @@ namespace cv {
             f64 delta_s           = current_elapsed_s - last_elapsed_s;
             last_elapsed_s        = current_elapsed_s;
 
+            // Run user frame code:
+            frontend_step(delta_s);
+
             // Render:
             context->should_run = !rl::WindowShouldClose();
             rl::BeginDrawing();
@@ -100,6 +107,9 @@ namespace cv {
                 context->window_size = { rl::GetScreenWidth(), rl::GetScreenHeight() };
             }
         }
+
+        // Run user exit code:
+        frontend_stop();
 
         rl::CloseWindow();
     }

@@ -44,8 +44,8 @@ namespace cv {
         }
 
         if (config.root_dir.size() == 0) {
-            log_warn("Empty config value passed for: root_dir\n* Falling back to: ./src/");
             config.root_dir = std::filesystem::current_path().string() + '/';
+            log_warn("Empty config value passed for: root_dir\n* Falling back to: \"{}\"", config.root_dir);
         }
 
         initialize_and_start_backend();

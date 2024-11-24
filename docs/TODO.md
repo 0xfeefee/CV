@@ -14,7 +14,8 @@ first stage is to have a working version with enough features to be presentable.
 	* [ ] Keyboard and gamepad input.
 	* [ ] Bitmap fonts, text rendering.
 	* [ ] Load a texture, draw a subtexture.
-- [ ] Implement the Lua frontend
-	* [ ] Map lifecycle functions.
+- [ ] Define the frontend hooks/API.
+- [ ] Implement the Lua frontend.
+	* [X] Map lifecycle functions.
 	* [ ] Map basic engine functionalities.
 	* [ ] Load source relative to current directory.

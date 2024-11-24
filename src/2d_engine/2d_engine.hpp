@@ -25,7 +25,7 @@ namespace cv {
         - { desired_framerate }: 60
     */
     struct Engine_Config {
-        std::string   root_dir          = "./src";
+        std::string   root_dir          = "";
         std::string   window_title      = PROJECT_INFO_STRING;
         s16           window_width      = 800;
         s16           window_height     = 600;

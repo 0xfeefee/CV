@@ -15,11 +15,21 @@ set(PROJECT_ENGINE_FRONTEND "Lua"        CACHE STRING "Engine frontend { Lua, Wr
 set(BUILD_TYPE 			    "Debug"      CACHE STRING "Build type { Debug, Release }")
 set(BUILD_ENABLE_LOGS       ON 		     CACHE STRING "Enable build logs")
 
+## Create the project:
+project(${PROJECT_NAME}
+	VERSION 0.4.0
+	LANGUAGES C CXX
+)
+
 ## Switches:
-set(BUILD_TYPE__DEBUG       OFF)
-set(BUILD_TYPE__RELEASE     OFF)
-set(BUILD_PLATFORM__WIN64 	OFF)
-set(BUILD_PLATFORM__LINUX64 OFF)
+set(BUILD_TYPE__DEBUG       	 OFF)
+set(BUILD_TYPE__RELEASE     	 OFF)
+set(BUILD_PLATFORM__WIN64 		 OFF)
+set(BUILD_PLATFORM__LINUX64 	 OFF)
+set(BUILD_FRONTEND_LUA           OFF)
+set(BUILD_FRONTEND_WREN          OFF)
+set(BUILD_BACKEND_RAYLIB         OFF)
+set(BUILD_BACKEND_DIRECTX        OFF)
 
 ## Build state:
 set(SRC) 				      ## Directory containing project source code.
@@ -35,23 +45,22 @@ set(PROJECT_INFO_STRING_FULL) ## Same as { PROJECT_INFO_STRING } but with added 
 ## Set CMake state:
 set(CMAKE_BUILD_TYPE   ${BUILD_TYPE})
 
-##
-## @temporary: Validate engine backend choice
-set(_VALID_ENGINE_BACKENDS "Raylib" "DirectX")
-set(_ENGINE_BACKEND_VALID FALSE)
-foreach(backend IN LISTS _VALID_ENGINE_BACKENDS)
-	if (PROJECT_ENGINE_BACKEND STREQUAL backend)
-		set(_ENGINE_BACKEND_VALID TRUE)
-		break()
-	endif()
-endforeach()
+## Backend selection:
+if (PROJECT_ENGINE_BACKEND STREQUAL "Raylib")
+	set(BUILD_BACKEND_RAYLIB  ON)
+elseif (PROJECT_ENGINE_BACKEND STREQUAL "DirectX")
+	set(BUILD_BACKEND_DIRECTX ON)
+else()
+	message(FATAL_ERROR "Unknown backend selected: ${PROJECT_ENGINE_BACKEND}")
+endif()
 
-if (NOT _ENGINE_BACKEND_VALID)
-	message(
-		FATAL_ERROR
-		"Invalid PROJECT_ENGINE_BACKEND given: ${PROJECT_ENGINE_BACKEND}, "
-		"valid options are: ${_VALID_ENGINE_BACKENDS}"
-	)
+## Frontend selection:
+if (PROJECT_ENGINE_FRONTEND STREQUAL "Lua")
+	set(BUILD_FRONTEND_LUA  ON)
+elseif(PROJECT_ENGINE_FRONTEND STREQUAL "Wren")
+	set(BUILD_FRONTEND_WREN ON)
+else()
+	message(FATAL_ERROR "Unknown frontend selected: ${PROJECT_ENGINE_FRONTEND}")
 endif()
 
 ## Log verbosity:
@@ -61,16 +70,6 @@ else()
 	set(CMAKE_MESSAGE_LOG_LEVEL "WARNING")
 endif()
 
-
-##
-## Create the project:
-project(${PROJECT_NAME}
-	VERSION 0.4.0
-	LANGUAGES C CXX
-)
-
-
-##
 ## C++ compiler configuration:
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 	set(CMAKE_CXX_COMPILER 		"cl")
@@ -88,7 +87,6 @@ endif()
 
 set(BUILD_COMPILER ${CMAKE_CXX_COMPILER_ID})
 
-
 ## Basic config
 set(CMAKE_CXX_STANDARD     17)
 set(SRC 	 	   		   "${CMAKE_CURRENT_SOURCE_DIR}/../src")
@@ -100,7 +98,7 @@ if (BUILD_TYPE STREQUAL "Release")
 	set(BUILD_TYPE__RELEASE ON)
 	add_compile_definitions(PROJECT_BUILD_RELEASE=1)
 elseif (BUILD_TYPE STREQUAL "Debug")
-	set(BUILD_TYPE__DEBUG   ON)
+	set(BUILD_TYPE__DEBUG     ON)
 	set(BUILD_EXECUTABLE_NAME "${BUILD_EXECUTABLE_NAME}__Debug")
 	add_compile_definitions(PROJECT_BUILD_DEBUG=1)
 else()
@@ -147,22 +145,41 @@ if (PROJECT_ENABLE_LOGS)
 	add_compile_definitions(PROJECT_ENABLE_LOGS=1)
 endif()
 
+## Vendor variables:
+set(VENDOR_INCLUDE_DIRS)
+set(VENDOR_LIBRARIES)
 
-##
-## Add: spdlog, raylib
-set(VENDOR_INCLUDE_DIRS
-	${VENDOR}/spdlog-v1.14.1/include
-	${VENDOR}/raylib-v5.0/include
-)
+## Add: backend
+if (BUILD_BACKEND_RAYLIB)
+	list(APPEND VENDOR_INCLUDE_DIRS
+		"${VENDOR}/raylib-v5.0/include"
+	)
 
-if (BUILD_PLATFORM__WIN64)
-	set(VENDOR_LIBRARIES
-		${VENDOR}/raylib-v5.0/lib/raylib.lib
+	list(APPEND VENDOR_LIBRARIES
+		"${VENDOR}/raylib-v5.0/lib/raylib.lib"
 		winmm
 	)
-else()
-	message(FATAL_ERROR "Raylib backend: build path not implemented for this platform: ${BUILD_PLATFORM}")
 endif()
+
+## Add: frontend
+if (BUILD_FRONTEND_LUA)
+	## Lua
+	list(APPEND VENDOR_INCLUDE_DIRS
+		"${VENDOR}/lua-v5.4.2/include"
+		"${VENDOR}/sol2-v3.3.0/include"
+	)
+
+	list(APPEND VENDOR_LIBRARIES
+		"${VENDOR}/lua-v5.4.2/lib/lua54.lib"
+	)
+elseif (BUILD_FRONTEND_WREN)
+	message(FATAL_ERROR "Wren frontend not ready yet!")
+endif()
+
+## Add: spdlog
+list(APPEND VENDOR_INCLUDE_DIRS
+	"${VENDOR}/spdlog-v1.14.1/include"
+)
 
 ##
 ## Create an executable:
@@ -173,9 +190,11 @@ set(SOURCE_FILES
 	${SRC}/2d_engine/ecs.cpp
 )
 
-## Add the current backend files:
+## Add the current backend and frontend files:
 file(GLOB_RECURSE _PROJECT_BACKEND_FILES "${SRC}/2d_engine/backends/${PROJECT_ENGINE_BACKEND}/*.cpp")
-list(APPEND SOURCE_FILES ${_PROJECT_BACKEND_FILES})
+file(GLOB_RECURSE _PROJECT_FRONTEND_FILES "${SRC}/2d_engine/frontends/${PROJECT_ENGINE_FRONTEND}/*.cpp")
+
+list(APPEND SOURCE_FILES ${_PROJECT_BACKEND_FILES} ${_PROJECT_FRONTEND_FILES})
 
 add_executable(${BUILD_EXECUTABLE_NAME}
 	${SOURCE_FILES}
@@ -209,11 +228,18 @@ message(NOTICE " * BUILD_EXECUTABLE_NAME: ${BUILD_EXECUTABLE_NAME}")
 message(NOTICE " * PROJECT_INFO_STRING_FULL: ${PROJECT_INFO_STRING_FULL}")
 message(NOTICE " * VENDOR: ${VENDOR}")
 message(NOTICE " * SRC: ${SRC}")
+
 message(NOTICE " * PROJECT_SOURCES:")
 foreach(source_file ${SOURCE_FILES})
 	message(NOTICE "   - ${source_file}")
 endforeach()
+
 message(NOTICE " * VENDOR_INCLUDE_DIRS:")
 foreach(include_dir ${VENDOR_INCLUDE_DIRS})
 	message(NOTICE "  - ${include_dir}")
+endforeach()
+
+message(NOTICE " * VENDOR_LIBRARIES:")
+foreach(lib ${VENDOR_LIBRARIES})
+	message(NOTICE " - ${lib}")
 endforeach()
