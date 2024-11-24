@@ -11,6 +11,7 @@ cmake_minimum_required(VERSION 3.20)
 set(PROJECT_NAME    	    "My_Project" CACHE STRING "Project name")
 set(PROJECT_ENABLE_LOGS     ON 		     CACHE STRING "Enable project logs")
 set(PROJECT_ENGINE_BACKEND  "Raylib"     CACHE STRING "Engine backend { Raylib, DirectX }")
+set(PROJECT_ENGINE_FRONTEND "Lua"        CACHE STRING "Engine frontend { Lua, Wren }")
 set(BUILD_TYPE 			    "Debug"      CACHE STRING "Build type { Debug, Release }")
 set(BUILD_ENABLE_LOGS       ON 		     CACHE STRING "Enable build logs")
 
@@ -85,6 +86,8 @@ else()
 	message(FATAL_ERROR "Unsupported compiler: ${CMAKE_CXX_COMPILER_ID}, valid options are: { MSVC, GCC }")
 endif()
 
+set(BUILD_COMPILER ${CMAKE_CXX_COMPILER_ID})
+
 
 ## Basic config
 set(CMAKE_CXX_STANDARD     17)
@@ -135,6 +138,8 @@ add_compile_definitions(
 	PROJECT_VERSION_STRING="${PROJECT_VERSION_STRING}"
 	PROJECT_INFO_STRING="${PROJECT_INFO_STRING}"
 	PROJECT_INFO_STRING_FULL="${PROJECT_INFO_STRING_FULL}"
+	PROJECT_ENGINE_BACKEND="${PROJECT_ENGINE_BACKEND}"
+	PROJECT_ENGINE_FRONTEND="${PROJECT_ENGINE_FRONTEND}"
 )
 
 ## Enable logging utilities:
@@ -195,12 +200,15 @@ target_link_libraries(${BUILD_EXECUTABLE_NAME}
 
 ##
 ## Log build variables (will log nothing if BUILD_LOGS are disabled)
-message(NOTICE "[BUILD - vars]\n * SRC: ${SRC}")
-message(NOTICE " * VENDOR: ${VENDOR}")
+message(NOTICE "[BUILD - vars]")
+message(NOTICE " * PROJECT_ENGINE_BACKEND: ${PROJECT_ENGINE_BACKEND}")
+message(NOTICE " * PROJECT_ENGINE_FRONTEND: ${PROJECT_ENGINE_FRONTEND}")
 message(NOTICE " * BUILD_TYPE: ${BUILD_TYPE}")
 message(NOTICE " * BUILD_COMPILER: ${BUILD_COMPILER}")
 message(NOTICE " * BUILD_EXECUTABLE_NAME: ${BUILD_EXECUTABLE_NAME}")
 message(NOTICE " * PROJECT_INFO_STRING_FULL: ${PROJECT_INFO_STRING_FULL}")
+message(NOTICE " * VENDOR: ${VENDOR}")
+message(NOTICE " * SRC: ${SRC}")
 message(NOTICE " * PROJECT_SOURCES:")
 foreach(source_file ${SOURCE_FILES})
 	message(NOTICE "   - ${source_file}")

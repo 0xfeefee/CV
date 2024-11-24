@@ -36,6 +36,8 @@ given configuration variables:
 	as expected, otherwise they expand to no-op.
 	* `PROJECT_ENGINE_BACKEND`: valid options are `{ Raylib, DirectX }`, allows for selection of
 	engine backend (implementation).
+	* `PROJECT_ENGINE_FRONTEND`: valid options are `{ Lua, Wren }`, allows for selection of
+	engine frontend (scripting language).
 - [scripts/build.bat](./scripts/build.bat): Builds the project, must run `config` first!
 - [scripts/run.bat](./scripts/run.bat): Runs the project.
 
@@ -46,3 +48,5 @@ to find, I could have used tags for specific versions but this way its less erro
 
 - [spdlog-v1.14.1](https://github.com/0xfeefee/spdlog-v1.14.1)
 - [raylib-v5.0](https://github.com/0xfeefee/raylib-v5.0)
+- [lua-v5.4.2](https://github.com/0xfeefee/lua-v5.4.2)
+- [sol2-v3.3.0](https://github.com/0xfeefee/sol2-v3.3.0)
