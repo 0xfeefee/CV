@@ -8,6 +8,8 @@
 */
 namespace cv {
 
+    #define get_type_index(type)        std::type_index(typeid(type))
+
     /*
         Component_Mask is used to determine which components an entity has, or which components a system
         requires.

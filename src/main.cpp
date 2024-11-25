@@ -1,5 +1,7 @@
 
+#include "2d_engine/ecs.hpp"
 #include <2d_engine/2d_engine.hpp>
+#include <2d_engine/2d_engine_api.hpp>
 
 int
 main(int argc, char* argv[]) {

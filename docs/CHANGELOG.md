@@ -31,3 +31,4 @@
 - 2024-11-23: Added the `Lua` and `sol` dependency.
 - 2024-11-24: Changed the build script to enable `frontend` selection, between: `{ Lua, Wren }`.
 - 2024-11-24: Implemented the basic `Lua` frontend.
+- 2024-11-25: Adding bindings for ECS/basic engine functionality to Lua.

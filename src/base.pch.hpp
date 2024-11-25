@@ -195,6 +195,7 @@ namespace cv {
 		template <typename ...Args>
 		inline void
 		log_error(cstr_t fmt, Args&&... args) {}
+
 	}
 
 #endif // PROJECT_ENABLE_LOGS

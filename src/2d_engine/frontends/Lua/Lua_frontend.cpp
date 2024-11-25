@@ -1,8 +1,10 @@
 
 // Implements:
+#include "2d_engine/ecs.hpp"
 #include <2d_engine/frontend_hook.hpp>
 
 #include <2d_engine/2d_engine.hpp>
+#include <2d_engine/2d_engine_api.hpp>
 
 #define SOL_NO_EXCEPTIONS 1
 #include <sol/sol.hpp> // Includes Lua.
@@ -15,6 +17,39 @@ namespace cv {
         sol::function end;
     };
 
+    /*
+        Create an entity from the Lua table.
+    */
+    static Entity
+    create_entity(const sol::table& def) {
+        Unique<Registry>& registry = get_context<Registry>();
+        Entity entity              = registry->create_entity();
+
+        // Transform:
+        if (def["x"].valid() || def["y"].valid() || def["width"].valid() || def["height"].valid()) {
+            registry->add_component<Rect>(
+                entity,
+                def["x"].get_or(0.0f),
+                def["y"].get_or(0.0f),
+                def["width"].get_or(0.0f),
+                def["height"].get_or(0.0f)
+            );
+        }
+
+        // Color:
+        if (def["color"].valid()) {
+            const sol::table& color = def["color"];
+            registry->add_component<Color>(
+                entity,
+                color["r"].get_or(0),
+                color["g"].get_or(0),
+                color["b"].get_or(0),
+                color["a"].get_or(255)
+            );
+        }
+
+        return entity;
+    }
 
     void
     frontend_start() {
@@ -37,6 +72,31 @@ namespace cv {
         lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::math, sol::lib::os);
         lua["package"]["path"] = lua["package"]["path"].get<std::string>() + project_pattern;
 
+        // Bind the API:
+        lua.new_usertype<u8x4>(
+            "Color",
+            sol::constructors<u8x4(), u8x4(u8, u8, u8), u8x4(u8, u8, u8, u8)>(),
+            "r", &u8x4::x,
+            "g", &u8x4::y,
+            "b", &u8x4::z,
+            "a", &u8x4::w
+        );
+
+        lua.new_usertype<Entity>("Entity",
+            "id", &Entity::id
+        );
+
+        lua.new_usertype<Rect>("Rect",
+            "x", &Rect::x,
+            "y", &Rect::y,
+            "width", &Rect::z,
+            "height", &Rect::w
+        );
+
+
+        lua.set_function("set_clear_color", set_clear_color);
+        lua.set_function("create_entity", create_entity);
+
         // Validate the main script:
         sol::load_result script = lua.load_file(project_main);
         if (!script.valid()) {
@@ -46,6 +106,7 @@ namespace cv {
 
         // Run the script:
         lua.script_file(project_main);
+
 
         /*
             Setup the bindings for lifecycle functions and provide defaults when user does not define them!

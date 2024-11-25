@@ -3,6 +3,7 @@
 
 // Implements:
 #include <2d_engine/ecs.hpp>
+#include <2d_engine/2d_engine_api.hpp>
 
 
 namespace cv {
@@ -34,6 +35,28 @@ namespace cv {
             Unique<Registry>& registry = get_context<Registry>();
             for (auto& entity: entities) {
                 Velocity& c = registry->get_component<Velocity>(entity);
+            }
+        }
+    };
+
+
+    class Rect_Renderer_System : public Base_System {
+    public:
+        Rect_Renderer_System() {
+            component_mask.add<Rect>();
+            component_mask.add<Color>();
+
+            log_warn("System comp mask: {}", component_mask);
+        }
+
+        void
+        update() {
+            Unique<Registry>& registry = get_context<Registry>();
+            for (auto& entity: entities) {
+                Rect& transform   = registry->get_component<Rect>(entity);
+                Color& tint_color = registry->get_component<Color>(entity);
+
+                draw_rect(transform, tint_color);
             }
         }
     };

@@ -110,7 +110,7 @@ namespace cv {
     void
     Registry::update() {
         // Add entitites:
-        for (auto new_entity: new_entities) {
+        for (auto& new_entity: new_entities) {
             // Get the entity component mask:
             const Component_Mask& entity_mask = component_masks[new_entity.id];
 
@@ -121,6 +121,7 @@ namespace cv {
                 }
             }
         }
+
         new_entities.clear();
 
         // Remove entities:

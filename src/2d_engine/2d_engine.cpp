@@ -3,6 +3,8 @@
 #include <2d_engine/2d_engine.hpp>
 
 // Dependencies:
+#include <2d_engine/ecs.hpp>
+#include <2d_engine/features/systems.hpp>
 #include <2d_engine/backend_hook.hpp>
 
 // Dependencies (3rd party):
@@ -47,6 +49,9 @@ namespace cv {
             config.root_dir = std::filesystem::current_path().string() + '/';
             log_warn("Empty config value passed for: root_dir\n* Falling back to: \"{}\"", config.root_dir);
         }
+
+        Unique<Registry>& registry = get_context<Registry>();
+        registry->add_system<Rect_Renderer_System>();
 
         initialize_and_start_backend();
     }

@@ -9,7 +9,7 @@ first stage is to have a working version with enough features to be presentable.
 - [X] Implement the basic ECS, shared by all backends.
 - [ ] Implement the Raylib backend
 	* [X] Platform window.
-	* [ ] Draw rectangles.
+	* [X] Draw rectangles.
 	* [ ] Load and play sound.
 	* [ ] Keyboard and gamepad input.
 	* [ ] Bitmap fonts, text rendering.

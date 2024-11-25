@@ -1,11 +1,14 @@
 
 // Implements:
+#include "2d_engine/ecs.hpp"
+#include "base.pch.hpp"
 #include <2d_engine/backend_hook.hpp>
 
 // Dependencies:
 #include <2d_engine/2d_engine.hpp>
-#include <2d_engine/backend_api.hpp>
+#include <2d_engine/2d_engine_api.hpp>
 #include <2d_engine/frontend_hook.hpp>
+#include <2d_engine/features/systems.hpp>
 
 // Dependencies (3rd_party):
 namespace rl {
@@ -32,6 +35,7 @@ namespace cv {
     initialize_and_start_backend() {
         Unique<Engine_Config>&  config   = get_context<Engine_Config>();
         Unique<Engine_Context>& context  = get_context<Engine_Context>();
+        Unique<Registry>&       registry = get_context<Registry>();
 
         // Raylib should only log errors:
         rl::SetTraceLogLevel(rl::LOG_ERROR);
@@ -94,13 +98,15 @@ namespace cv {
             last_elapsed_s        = current_elapsed_s;
 
             // Run user frame code:
+            registry->update();
             frontend_step(delta_s);
 
             // Render:
             context->should_run = !rl::WindowShouldClose();
             rl::BeginDrawing();
-            rl::ClearBackground(context->clear_color);
-            rl::EndDrawing();
+            rl::ClearBackground(context->clear_color); {
+                registry->get_system<Rect_Renderer_System>().update();
+            } rl::EndDrawing();
 
             // Update window size:
             if (rl::IsWindowResized()) {
@@ -112,6 +118,26 @@ namespace cv {
         frontend_stop();
 
         rl::CloseWindow();
+    }
+
+    void
+    set_clear_color(const u8x4& rgba_color) {
+        Unique<Engine_Context>& context = get_context<Engine_Context>();
+
+        context->clear_color = { rgba_color.x, rgba_color.y, rgba_color.z, rgba_color.w };
+    }
+
+    void
+    draw_rect(const Rect& rect, const Color& fill_color) {
+        Unique<Engine_Context>& context = get_context<Engine_Context>();
+
+        rl::DrawRectangle(
+           static_cast<int>(rect.x),
+           static_cast<int>(rect.y),
+           static_cast<int>(rect.z),
+           static_cast<int>(rect.w),
+           { fill_color.x, fill_color.y, fill_color.z, fill_color.w }
+       );
     }
 
 } // cv
