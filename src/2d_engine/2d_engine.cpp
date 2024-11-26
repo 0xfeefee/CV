@@ -52,6 +52,7 @@ namespace cv {
 
         Unique<Registry>& registry = get_context<Registry>();
         registry->add_system<Rect_Renderer_System>();
+        registry->add_system<Basic_Velocity_System>();
 
         initialize_and_start_backend();
     }

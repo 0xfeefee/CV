@@ -1,13 +1,16 @@
 
 // Implements:
-#include "2d_engine/ecs.hpp"
 #include <2d_engine/frontend_hook.hpp>
 
+// Dependencies:
 #include <2d_engine/2d_engine.hpp>
 #include <2d_engine/2d_engine_api.hpp>
+#include <2d_engine/ecs.hpp>
 
+// Dependencies (3rd_party):
 #define SOL_NO_EXCEPTIONS 1
-#include <sol/sol.hpp> // Includes Lua.
+#include <sol/sol.hpp>
+
 
 namespace cv {
 
@@ -17,16 +20,45 @@ namespace cv {
         sol::function end;
     };
 
+    static Rect&
+    get_rect(const Entity& entity) {
+        return get_context<Registry>()->get_component<Rect>(entity);
+    }
+
+    static Color&
+    get_color(const Entity& entity) {
+        return get_context<Registry>()->get_component<Color>(entity);
+    }
+
+    static Velocity&
+    get_velocity(const Entity& entity) {
+        return get_context<Registry>()->get_component<Velocity>(entity);
+    }
+
     /*
-        Create an entity from the Lua table.
+        Create an entity from the entity definition.
+        - Component is added to the entity if any of the component fields are specified in the definition.
+        - Most default to zero but some are required, if for instance you specify any of the fields of { Rect }
+          component, then you must also make sure to include non-zero { width, height } fields. For now this
+          raises an error in debug builds only, but we will have a similar behavior for release builds too.
     */
-    static Entity
-    create_entity(const sol::table& def) {
+    static sol::table
+    create_entity(sol::table& def) {
         Unique<Registry>& registry = get_context<Registry>();
         Entity entity              = registry->create_entity();
 
-        // Transform:
+        sol::table lua_entity_info = get_context<sol::state>()->create_table();
+        lua_entity_info["id"]      = entity;
+
+        // Rect:
         if (def["x"].valid() || def["y"].valid() || def["width"].valid() || def["height"].valid()) {
+            lua_entity_info["rect"] = true;
+
+            ERROR_IF(
+                def["width"].get_or(0) <= 0 || def["height"].get_or(0) <= 0,
+                "Must specify both { width } and { height } of an entity!"
+            );
+
             registry->add_component<Rect>(
                 entity,
                 def["x"].get_or(0.0f),
@@ -36,19 +68,29 @@ namespace cv {
             );
         }
 
+        // Velocity:
+        if (def["hspeed"].valid() || def["vspeed"].valid()) {
+            lua_entity_info["velocity"] = true;
+            registry->add_component<Velocity>(
+                entity,
+                def["hspeed"].get_or(0),
+                def["vspeed"].get_or(0)
+            );
+            }
+
         // Color:
-        if (def["color"].valid()) {
-            const sol::table& color = def["color"];
+        if (def["r"].valid() || def["g"].valid() || def["b"].valid() || def["a"].valid()) {
+            lua_entity_info["color"] = true;
             registry->add_component<Color>(
                 entity,
-                color["r"].get_or(0),
-                color["g"].get_or(0),
-                color["b"].get_or(0),
-                color["a"].get_or(255)
+                def["r"].get_or(0),
+                def["g"].get_or(0),
+                def["b"].get_or(0),
+                def["a"].get_or(255)
             );
         }
 
-        return entity;
+        return lua_entity_info;
     }
 
     void
@@ -73,13 +115,20 @@ namespace cv {
         lua["package"]["path"] = lua["package"]["path"].get<std::string>() + project_pattern;
 
         // Bind the API:
-        lua.new_usertype<u8x4>(
+        lua.new_usertype<Color>(
             "Color",
-            sol::constructors<u8x4(), u8x4(u8, u8, u8), u8x4(u8, u8, u8, u8)>(),
-            "r", &u8x4::x,
-            "g", &u8x4::y,
-            "b", &u8x4::z,
-            "a", &u8x4::w
+            sol::constructors<Color(), Color(u8, u8, u8), Color(u8, u8, u8, u8)>(),
+            "r", &Color::x,
+            "g", &Color::y,
+            "b", &Color::z,
+            "a", &Color::w
+        );
+
+        lua.new_usertype<Velocity>(
+            "Velocity",
+            sol::constructors<Velocity(), Velocity(f32, f32)>(),
+            "x", &Velocity::x,
+            "y", &Velocity::y
         );
 
         lua.new_usertype<Entity>("Entity",
@@ -87,15 +136,32 @@ namespace cv {
         );
 
         lua.new_usertype<Rect>("Rect",
-            "x", &Rect::x,
-            "y", &Rect::y,
-            "width", &Rect::z,
+            "x",      &Rect::x,
+            "y",      &Rect::y,
+            "width",  &Rect::z,
             "height", &Rect::w
         );
 
+        lua.new_enum<Keyboard_Key>("Key", {
+            { "A", Keyboard_Key::KEY_A },
+            { "B", Keyboard_Key::KEY_B },
+            { "C", Keyboard_Key::KEY_C }
+            // @todo: map the rest of the keyboard keys...
+        });
 
-        lua.set_function("set_clear_color", set_clear_color);
-        lua.set_function("create_entity", create_entity);
+        sol::table api_bindings = lua.create_table();
+
+        // Lua specific:
+        api_bindings.set_function("create_entity", create_entity);
+        api_bindings.set_function("get_rect", get_rect);
+        api_bindings.set_function("get_color", get_color);
+        api_bindings.set_function("get_velocity", get_velocity);
+
+        // Directly from engine API:
+        api_bindings.set_function("clear_color", set_clear_color);
+        api_bindings.set_function("is_key_pressed", is_key_pressed);
+
+        lua["cv"] = api_bindings;
 
         // Validate the main script:
         sol::load_result script = lua.load_file(project_main);
@@ -106,7 +172,6 @@ namespace cv {
 
         // Run the script:
         lua.script_file(project_main);
-
 
         /*
             Setup the bindings for lifecycle functions and provide defaults when user does not define them!

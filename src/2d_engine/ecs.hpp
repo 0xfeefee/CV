@@ -268,6 +268,9 @@ namespace cv {
 
         void
         kill_entity(Entity entity);
+
+        const Component_Mask&
+        get_component_mask(Entity entity) const;
     };
 
 }

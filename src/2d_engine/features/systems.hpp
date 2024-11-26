@@ -8,45 +8,38 @@
 
 namespace cv {
 
-    struct Velocity {
-        f32 horizontal;
-        f32 vertical;
-
-        Velocity(f32 horizontal = 0.0f, f32 vertical = 0.0f)
-        : horizontal(horizontal), vertical(vertical) {
-        }
-    };
-
-    class Example_System : public Base_System {
+    /*
+        Modifies entity position based on the current velocity...
+    */
+    class Basic_Velocity_System : public Base_System {
     public:
-        Example_System() {
+        Basic_Velocity_System() {
+            component_mask.add<Rect>();
             component_mask.add<Velocity>();
         }
 
         void
-        foobar() {
-            Unique<Registry>& registry = get_context<Registry>();
-            Entity e = registry->create_entity();
-            registry->add_component<Velocity>(e, 42.0f, 42.0f);
-        }
-
-        void
-        update() {
+        update(f64 dt) {
             Unique<Registry>& registry = get_context<Registry>();
             for (auto& entity: entities) {
-                Velocity& c = registry->get_component<Velocity>(entity);
+                Rect& transform = registry->get_component<Rect>(entity);
+                Velocity& velocity = registry->get_component<Velocity>(entity);
+
+                transform.x += velocity.x * dt;
+                transform.y += velocity.y * dt;
             }
         }
     };
 
 
+    /*
+        Draws an entity rectangle...
+    */
     class Rect_Renderer_System : public Base_System {
     public:
         Rect_Renderer_System() {
             component_mask.add<Rect>();
             component_mask.add<Color>();
-
-            log_warn("System comp mask: {}", component_mask);
         }
 
         void

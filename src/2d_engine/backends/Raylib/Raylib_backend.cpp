@@ -1,7 +1,5 @@
 
 // Implements:
-#include "2d_engine/ecs.hpp"
-#include "base.pch.hpp"
 #include <2d_engine/backend_hook.hpp>
 
 // Dependencies:
@@ -100,6 +98,7 @@ namespace cv {
             // Run user frame code:
             registry->update();
             frontend_step(delta_s);
+            registry->get_system<Basic_Velocity_System>().update(delta_s);
 
             // Render:
             context->should_run = !rl::WindowShouldClose();
@@ -138,6 +137,11 @@ namespace cv {
            static_cast<int>(rect.w),
            { fill_color.x, fill_color.y, fill_color.z, fill_color.w }
        );
+    }
+
+    bool
+    is_key_pressed(Keyboard_Key key) {
+        return rl::IsKeyPressed(key);
     }
 
 } // cv

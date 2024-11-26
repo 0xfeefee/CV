@@ -32,3 +32,7 @@
 - 2024-11-24: Changed the build script to enable `frontend` selection, between: `{ Lua, Wren }`.
 - 2024-11-24: Implemented the basic `Lua` frontend.
 - 2024-11-25: Adding bindings for ECS/basic engine functionality to Lua.
+- 2024-11-26: Implemented POC engine features for Lua frontend.
+- 2024-11-26: Offscreen rendering stub, 3D billboard stub.
+
+## v0.5.0

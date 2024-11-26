@@ -197,4 +197,9 @@ namespace cv {
         }
     }
 
+    const Component_Mask&
+    Registry::get_component_mask(Entity entity) const {
+        return component_masks[entity.id];
+    }
+
 } // cv
