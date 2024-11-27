@@ -1,5 +1,10 @@
 #pragma once
+/*
+# Engine API
 
+    We only support { PNG } images in order to make things as simple as possible, technically there's no reason
+    to not support other formats, but it's good to set hard limitations.
+*/
 namespace cv {
 
     struct s32x2 {
@@ -36,6 +41,14 @@ namespace cv {
 
         f32x4(f32 x = 0, f32 y = 0, f32 z = 0, f32 w = 0)
         : x(x), y(y), z(z), w(w) {}
+    };
+
+    struct Texture {
+        int   id;
+        f32x4 rect;
+
+        Texture(int id = 0, f32x4 rect = {})
+        : id(id), rect(rect) {}
     };
 
     // Components:
@@ -75,13 +88,28 @@ namespace cv {
         KEY_Z  = 90
     };
 
+    bool
+    is_key_pressed(Keyboard_Key key);
+
     void
     set_clear_color(const u8x4& rgba_color);
 
     void
     draw_rect(const Rect& rect, const Color& fill_color);
 
-    bool
-    is_key_pressed(Keyboard_Key key);
+    Texture
+    load_texture(cstr_t texture_file_name);
+
+    void
+    draw_texture(Texture& texture, const Rect& entity_rect);
+
+    /*
+    ## Common
+
+        Set of common engine functions, implemented in { 2d_engine.cpp }.
+    */
+
+    std::string
+    image_path(std::string file_name);
 
 } // cv

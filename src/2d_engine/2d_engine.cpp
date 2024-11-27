@@ -6,6 +6,7 @@
 #include <2d_engine/ecs.hpp>
 #include <2d_engine/features/systems.hpp>
 #include <2d_engine/backend_hook.hpp>
+#include <2d_engine/2d_engine_api.hpp>
 
 // Dependencies (3rd party):
 #include <filesystem>
@@ -55,6 +56,11 @@ namespace cv {
         registry->add_system<Basic_Velocity_System>();
 
         initialize_and_start_backend();
+    }
+
+    std::string
+    image_path(std::string file_name) {
+        return get_context<Engine_Config>()->root_dir + "/images/" + file_name + ".png";
     }
 
 } // cv

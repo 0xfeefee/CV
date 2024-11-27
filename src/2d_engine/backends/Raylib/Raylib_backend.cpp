@@ -9,23 +9,47 @@
 #include <2d_engine/features/systems.hpp>
 
 // Dependencies (3rd_party):
+// Workaround the Raylib name clashes with { windows.h }, does not work with Clang!
 namespace rl {
     #include <raylib.h>
-}
 
+    /*
+    ## Helpers
+
+        A few helpers to help with conversion of common types.
+    */
+
+    static inline rl::Rectangle
+    to_rectangle(const cv::Rect rect) {
+        return { rect.x, rect.y, rect.z, rect.w };
+    }
+
+    static inline rl::Color
+    to_color(const cv::Color& color) {
+        return { color.x, color.y, color.z, color.w };
+    }
+}
 
 namespace cv {
 
     /*
         Raylib backend context.
+        - { should_run }: keeps the main loop running.
+        - { clear_color }: platform window clear color.
+        - { s32x2 }: platform window size.
+        - { textures }: raylib source textures, used by subtextures/our API.
     */
+
+    // @todo: replace this...
+    constexpr int MAX_TEXTURE_COUNT = 8;
     struct Engine_Context {
-        rl::Color clear_color;
-        s32x2 window_size;
-        bool should_run;
+        bool                 should_run;
+        rl::Color            clear_color;
+        s32x2                window_size;
+        Array<rl::Texture2D> textures;
 
         Engine_Context()
-        : clear_color({45, 45, 45, 255}), should_run(true), window_size({0, 0}) {
+        : clear_color({45, 45, 45, 255}), should_run(true), window_size({0, 0}), textures(MAX_TEXTURE_COUNT) {
         }
     };
 
@@ -126,6 +150,11 @@ namespace cv {
         context->clear_color = { rgba_color.x, rgba_color.y, rgba_color.z, rgba_color.w };
     }
 
+    bool
+    is_key_pressed(Keyboard_Key key) {
+        return rl::IsKeyPressed(key);
+    }
+
     void
     draw_rect(const Rect& rect, const Color& fill_color) {
         Unique<Engine_Context>& context = get_context<Engine_Context>();
@@ -135,13 +164,35 @@ namespace cv {
            static_cast<int>(rect.y),
            static_cast<int>(rect.z),
            static_cast<int>(rect.w),
-           { fill_color.x, fill_color.y, fill_color.z, fill_color.w }
+           rl::to_color(fill_color)
        );
     }
 
-    bool
-    is_key_pressed(Keyboard_Key key) {
-        return rl::IsKeyPressed(key);
+    Texture
+    load_texture(cstr_t texture_file_name) {
+        Unique<Engine_Context>& context = get_context<Engine_Context>();
+
+        rl::Texture2D texture = rl::LoadTexture(image_path(texture_file_name).c_str());
+        context->textures.set(texture.id, texture);
+
+        return Texture(
+            static_cast<int>(texture.id),
+            f32x4(0, 0, texture.width, texture.height)
+        );
+    }
+
+    void
+    draw_texture(Texture& texture, const Rect& entity_rect) {
+        Unique<Engine_Context>& context = get_context<Engine_Context>();
+
+        rl::DrawTexturePro(
+            context->textures[texture.id],
+            rl::to_rectangle(texture.rect),
+            rl::to_rectangle(entity_rect),
+            { 0, 0 },
+            0,
+            { 255, 255, 255, 255 }
+        );
     }
 
 } // cv

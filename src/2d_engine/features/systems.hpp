@@ -22,7 +22,7 @@ namespace cv {
         update(f64 dt) {
             Unique<Registry>& registry = get_context<Registry>();
             for (auto& entity: entities) {
-                Rect& transform = registry->get_component<Rect>(entity);
+                Rect& transform    = registry->get_component<Rect>(entity);
                 Velocity& velocity = registry->get_component<Velocity>(entity);
 
                 transform.x += velocity.x * dt;
@@ -50,6 +50,28 @@ namespace cv {
                 Color& tint_color = registry->get_component<Color>(entity);
 
                 draw_rect(transform, tint_color);
+            }
+        }
+    };
+
+    /*
+        Draws a texture, or a subtexture for the given entity.
+    */
+    class Texture_Renderer_System : public Base_System {
+    public:
+        Texture_Renderer_System() {
+            component_mask.add<Rect>();
+            component_mask.add<Texture>();
+        }
+
+        void
+        update() {
+            Unique<Registry>& registry = get_context<Registry>();
+            for (auto& entity: entities) {
+                Rect& rect       = registry->get_component<Rect>(entity);
+                Texture& texture = registry->get_component<Texture>(entity);
+
+                draw_texture(texture, rect);
             }
         }
     };

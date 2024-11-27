@@ -118,6 +118,58 @@ namespace cv {
 	*/
 	std::string
 	read_entire_file(cstr_t file_name);
+
+
+	/*
+		Simple, and lazy array type for the engine specific needs.
+		- Only add, set and read operations are supported, because that's all we need.
+		- { add, set } should not be used on the same instance, most likely...
+	*/
+	template <typename T>
+	class Array {
+	private:
+		const int capacity;
+		int       count;
+		T*        data;
+
+	public:
+		Array(int capacity)
+		: capacity(capacity), count(0) {
+			ERROR_IF(capacity <= 0, "Capacity must be greater than 0!");
+
+			data = new T[capacity];
+
+			ERROR_IF(data == nullptr, "Failed to allocate the Array data!");
+		}
+
+		void
+		add(const T& element) {
+			ERROR_IF(count >= capacity, "Max capacity already reached!");
+
+			data[count] = element;
+			count += 1;
+		}
+
+		void
+		set(int index, const T& element) {
+			ERROR_IF(index >= capacity || index < 0, "Invalid index given to { Array.set() }.");
+			ERROR_IF(count > 0, "You probably should not use { set } on this instance!");
+
+			data[index] = element;
+		}
+
+		T&
+		operator[](int index) {
+			ERROR_IF(index >= capacity || index < 0, "Invalid index given to { Array.set() }.");
+
+			return data[index];
+		}
+
+		~Array() {
+			delete data;
+			log_warn("~Array");
+		}
+	};
 }
 
 

@@ -36,3 +36,4 @@
 - 2024-11-26: Offscreen rendering stub, 3D billboard stub.
 
 ## v0.5.0
+- 2024-11-27: Adding the texture rendering API/systems.
