@@ -54,10 +54,10 @@ namespace cv {
         if (def["x"].valid() || def["y"].valid() || def["width"].valid() || def["height"].valid()) {
             lua_entity_info["rect"] = true;
 
-            ERROR_IF(
-                def["width"].get_or(0) <= 0 || def["height"].get_or(0) <= 0,
-                "Must specify both { width } and { height } of an entity!"
-            );
+            // ERROR_IF(
+            //     def["width"].get_or(0) <= 0 || def["height"].get_or(0) <= 0,
+            //     "Must specify both { width } and { height } of an entity!"
+            // );
 
             registry->add_component<Rect>(
                 entity,
@@ -87,6 +87,21 @@ namespace cv {
                 def["g"].get_or(0),
                 def["b"].get_or(0),
                 def["a"].get_or(255)
+            );
+        }
+
+        // Texture:
+        if (def["texture_id"].valid()) {
+            lua_entity_info["texture"] = true; // We might not even support this ...
+            registry->add_component<Texture>(
+                entity,
+                def["texture_id"].get_or(0), // @temporary...
+                f32x4(
+                    def["texture_x"].get_or(0),
+                    def["texture_y"].get_or(0),
+                    def["texture_width"].get_or(32), // @temporary, validate before
+                    def["texture_height"].get_or(32)
+                )
             );
         }
 
@@ -131,15 +146,24 @@ namespace cv {
             "y", &Velocity::y
         );
 
-        lua.new_usertype<Entity>("Entity",
+        lua.new_usertype<Entity>(
+            "Entity",
             "id", &Entity::id
         );
 
-        lua.new_usertype<Rect>("Rect",
+        lua.new_usertype<Rect>(
+            "Rect",
             "x",      &Rect::x,
             "y",      &Rect::y,
             "width",  &Rect::z,
             "height", &Rect::w
+        );
+
+        lua.new_usertype<Texture>(
+            "Texture",
+            sol::constructors<Texture(int, f32x4)>(),
+            "id", &Texture::id,
+            "rect", &Texture::rect
         );
 
         lua.new_enum<Keyboard_Key>("Key", {
@@ -160,6 +184,7 @@ namespace cv {
         // Directly from engine API:
         api_bindings.set_function("clear_color", set_clear_color);
         api_bindings.set_function("is_key_pressed", is_key_pressed);
+        api_bindings.set_function("load_texture", load_texture);
 
         lua["cv"] = api_bindings;
 

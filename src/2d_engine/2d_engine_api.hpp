@@ -43,6 +43,10 @@ namespace cv {
         : x(x), y(y), z(z), w(w) {}
     };
 
+    /*
+        Texture id is used to identify the GPU texture which will be used and rect a part of that texture to
+        use.
+    */
     struct Texture {
         int   id;
         f32x4 rect;
@@ -98,7 +102,7 @@ namespace cv {
     draw_rect(const Rect& rect, const Color& fill_color);
 
     Texture
-    load_texture(cstr_t texture_file_name);
+    load_texture(const std::string& texture_file_name);
 
     void
     draw_texture(Texture& texture, const Rect& entity_rect);
@@ -110,6 +114,6 @@ namespace cv {
     */
 
     std::string
-    image_path(std::string file_name);
+    image_path(const std::string& file_name);
 
 } // cv

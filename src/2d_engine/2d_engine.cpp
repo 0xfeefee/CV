@@ -54,13 +54,14 @@ namespace cv {
         Unique<Registry>& registry = get_context<Registry>();
         registry->add_system<Rect_Renderer_System>();
         registry->add_system<Basic_Velocity_System>();
+        registry->add_system<Texture_Renderer_System>();
 
         initialize_and_start_backend();
     }
 
     std::string
-    image_path(std::string file_name) {
-        return get_context<Engine_Config>()->root_dir + "/images/" + file_name + ".png";
+    image_path(const std::string& file_name) {
+        return get_context<Engine_Config>()->root_dir + "assets/images/" + file_name + ".png";
     }
 
 } // cv

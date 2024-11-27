@@ -1,5 +1,6 @@
 
 // Implements:
+#include "base.pch.hpp"
 #include <2d_engine/backend_hook.hpp>
 
 // Dependencies:
@@ -7,6 +8,8 @@
 #include <2d_engine/2d_engine_api.hpp>
 #include <2d_engine/frontend_hook.hpp>
 #include <2d_engine/features/systems.hpp>
+#include <string>
+#include <unordered_map>
 
 // Dependencies (3rd_party):
 // Workaround the Raylib name clashes with { windows.h }, does not work with Clang!
@@ -42,10 +45,13 @@ namespace cv {
 
     // @todo: replace this...
     constexpr int MAX_TEXTURE_COUNT = 8;
+    typedef std::unordered_map<std::string, rl::Texture2D> Texture_Map;
+
     struct Engine_Context {
-        bool                 should_run;
-        rl::Color            clear_color;
-        s32x2                window_size;
+        bool         should_run;
+        rl::Color    clear_color;
+        s32x2        window_size;
+        // Texture_Map  loaded_textures;
         Array<rl::Texture2D> textures;
 
         Engine_Context()
@@ -129,6 +135,7 @@ namespace cv {
             rl::BeginDrawing();
             rl::ClearBackground(context->clear_color); {
                 registry->get_system<Rect_Renderer_System>().update();
+                registry->get_system<Texture_Renderer_System>().update();
             } rl::EndDrawing();
 
             // Update window size:
@@ -169,10 +176,13 @@ namespace cv {
     }
 
     Texture
-    load_texture(cstr_t texture_file_name) {
+    load_texture(const std::string& texture_file_name) {
         Unique<Engine_Context>& context = get_context<Engine_Context>();
 
-        rl::Texture2D texture = rl::LoadTexture(image_path(texture_file_name).c_str());
+        std::string path = image_path(texture_file_name);
+        log_warn("Loading texture: {}", path);
+
+        rl::Texture2D texture = rl::LoadTexture(path.c_str());
         context->textures.set(texture.id, texture);
 
         return Texture(

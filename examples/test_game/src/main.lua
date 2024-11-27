@@ -7,27 +7,38 @@ function game_begin()
 	-- expected id: 0
 	create_entity({});
 
+	test = cv.load_texture("tilemap")
+	print("Texture_id: " .. test.id)
+	print("Texture_width: " .. test.rect.width)
+
 	-- expected id: 1
 	player = create_entity({
 		x= 192,
 		y= 192,
-		width= 64,
-		height=  64,
+		width= test.rect.width,
+		height= test.rect.height,
 		r= 255,
 		g= 0,
 		b= 0,
 		a= 255,
 		vspeed= 40,
-		hspeed= 40
+		hspeed= 40,
+		texture_id= test.id,
+		texture_x= 50
 	});
 
 	player.rect.x = 0
 
 	local e2 = create_entity({
-		x= 256, y= 64,
-		width= 64, height= 32,
+		x= 64,
+		y= 64,
+		width= test.rect.width,
+		height= test.rect.height,
 		r= 255,
-		hspeed= 50
+		hspeed= 50,
+		texture_id= test.id,
+		texture_width= test.rect.width,
+		texture_height= test.rect.height
 	});
 
 	print(e.id);
