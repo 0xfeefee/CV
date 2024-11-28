@@ -11,8 +11,7 @@ function game_begin()
 	print("Texture_id: " .. test.id)
 	print("Texture_width: " .. test.rect.width)
 
-	-- expected id: 1
-	player = create_entity({
+	entity_definition = {
 		x= 192,
 		y= 192,
 		width= test.rect.width,
@@ -24,25 +23,26 @@ function game_begin()
 		vspeed= 40,
 		hspeed= 40,
 		texture_id= test.id,
-		texture_x= 50
-	});
+	}
+
+	player = create_entity(entity_definition);
 
 	player.rect.x = 0
 
-	local e2 = create_entity({
-		x= 64,
-		y= 64,
-		width= test.rect.width,
-		height= test.rect.height,
-		r= 255,
-		hspeed= 50,
-		texture_id= test.id,
-		texture_width= test.rect.width,
-		texture_height= test.rect.height
-	});
+	-- local e2 = create_entity({
+	-- 	x= 64,
+	-- 	y= 64,
+	-- 	width= test.rect.width,
+	-- 	height= test.rect.height,
+	-- 	r= 255,
+	-- 	hspeed= 50,
+	-- 	texture_id= test.id,
+	-- 	texture_width= test.rect.width,
+	-- 	texture_height= test.rect.height
+	-- });
 
-	print(e.id);
-	print("game_start!")
+	-- print(e.id);
+	-- print("game_start!")
 end
 
 function game_step()

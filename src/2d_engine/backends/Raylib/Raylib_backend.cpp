@@ -193,10 +193,17 @@ namespace cv {
 
     void
     draw_texture(Texture& texture, const Rect& entity_rect) {
-        Unique<Engine_Context>& context = get_context<Engine_Context>();
+        Unique<Engine_Context>& context     = get_context<Engine_Context>();
+        const rl::Texture2D& source_texture = context->textures[texture.id];
+
+        // If any of the given textures dimensions are 0, inherit dimensions of the source texture.
+        if (texture.rect.z == 0.0f || texture.rect.w == 0.0f) {
+            texture.rect.z = source_texture.width;
+            texture.rect.w = source_texture.height;
+        }
 
         rl::DrawTexturePro(
-            context->textures[texture.id],
+            source_texture,
             rl::to_rectangle(texture.rect),
             rl::to_rectangle(entity_rect),
             { 0, 0 },

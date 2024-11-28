@@ -11,7 +11,6 @@
 #define SOL_NO_EXCEPTIONS 1
 #include <sol/sol.hpp>
 
-
 namespace cv {
 
     struct Script_Context {
@@ -54,10 +53,10 @@ namespace cv {
         if (def["x"].valid() || def["y"].valid() || def["width"].valid() || def["height"].valid()) {
             lua_entity_info["rect"] = true;
 
-            // ERROR_IF(
-            //     def["width"].get_or(0) <= 0 || def["height"].get_or(0) <= 0,
-            //     "Must specify both { width } and { height } of an entity!"
-            // );
+            ERROR_IF(
+                def["width"].get_or(0.0f) <= 0 || def["height"].get_or(0.0f) <= 0,
+                "Must specify both { width } and { height } of an entity!"
+            );
 
             registry->add_component<Rect>(
                 entity,
@@ -73,8 +72,8 @@ namespace cv {
             lua_entity_info["velocity"] = true;
             registry->add_component<Velocity>(
                 entity,
-                def["hspeed"].get_or(0),
-                def["vspeed"].get_or(0)
+                def["hspeed"].get_or(0.0f),
+                def["vspeed"].get_or(0.0f)
             );
             }
 
@@ -97,10 +96,10 @@ namespace cv {
                 entity,
                 def["texture_id"].get_or(0), // @temporary...
                 f32x4(
-                    def["texture_x"].get_or(0),
-                    def["texture_y"].get_or(0),
-                    def["texture_width"].get_or(32), // @temporary, validate before
-                    def["texture_height"].get_or(32)
+                    def["texture_x"].get_or(0.0f),
+                    def["texture_y"].get_or(0.0f),
+                    def["texture_width"].get_or(0.0f), // @temporary, validate before
+                    def["texture_height"].get_or(0.0f)
                 )
             );
         }
