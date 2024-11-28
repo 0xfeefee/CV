@@ -1,5 +1,6 @@
 # CV (v0.5.0)
-This is just a basic demo of programming skills, not a real product.
+This is just a basic demo of programming skills, not a real product. It will be continually
+updated until I'm done with search.
 
 ## Idea (subject to change)
 - A tiny 2D game engine.
@@ -50,3 +51,7 @@ to find, I could have used tags for specific versions but this way its less erro
 - [raylib-v5.0](https://github.com/0xfeefee/raylib-v5.0)
 - [lua-v5.4.2](https://github.com/0xfeefee/lua-v5.4.2)
 - [sol2-v3.3.0](https://github.com/0xfeefee/sol2-v3.3.0)
+
+### Screenshots
+![First working iteration of sprite rendering - v.0.5.0](./docs/screenshots/v5.0.0.PNG)
+

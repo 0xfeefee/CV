@@ -261,16 +261,16 @@ namespace cv {
 	    template <typename FormatContext>
 	    inline auto
 	    format(const cv::Component_Mask& mask, FormatContext& ctx) {
-            if constexpr (sizeof(cv::Component_Mask) == 1) {
+            if constexpr (sizeof(cv::Component_Mask) == 1) {        // 8 bits
                 return fmt::format_to(ctx.out(), "[{:08b}]", mask.get_value());
-            } if constexpr (sizeof(cv::Component_Mask) == 2) { // 16 bits
+            } if constexpr (sizeof(cv::Component_Mask) == 2) {      // 16 bits
                 return fmt::format_to(ctx.out(), "[{:016b}]", mask.get_value());
             } else if constexpr (sizeof(cv::Component_Mask) == 4) { // 32 bits
                 return fmt::format_to(ctx.out(), "[{:032b}]", mask.get_value());
             } else if constexpr (sizeof(cv::Component_Mask) == 8) { // 64 bits
                 return fmt::format_to(ctx.out(), "[{:064b}]", mask.get_value());
             } else {
-                ERROR_IF(true);
+                ERROR_IF(true, "Formatter for this size is not implemented!");
             }
 	    }
 

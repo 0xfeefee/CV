@@ -94,11 +94,11 @@ namespace cv {
             lua_entity_info["texture"] = true; // We might not even support this ...
             registry->add_component<Texture>(
                 entity,
-                def["texture_id"].get_or(0), // @temporary...
+                def["texture_id"].get_or(0),
                 f32x4(
                     def["texture_x"].get_or(0.0f),
                     def["texture_y"].get_or(0.0f),
-                    def["texture_width"].get_or(0.0f), // @temporary, validate before
+                    def["texture_width"].get_or(0.0f),
                     def["texture_height"].get_or(0.0f)
                 )
             );

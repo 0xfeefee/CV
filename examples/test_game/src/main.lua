@@ -4,18 +4,17 @@ require("common") -- Defines: the Lua API which will be preloaded in future vers
 player = nil
 
 function game_begin()
-	-- expected id: 0
+	-- expected id: 0, no components
 	create_entity({});
 
-	test = cv.load_texture("tilemap")
-	print("Texture_id: " .. test.id)
-	print("Texture_width: " .. test.rect.width)
+	test = cv.load_texture("tilemap");
 
-	entity_definition = {
+	-- First pixel guy in the { tilemap }, scale: 16x
+	player = create_entity({
 		x= 192,
 		y= 192,
-		width= test.rect.width,
-		height= test.rect.height,
+		width= 128,
+		height= 128,
 		r= 255,
 		g= 0,
 		b= 0,
@@ -23,26 +22,22 @@ function game_begin()
 		vspeed= 40,
 		hspeed= 40,
 		texture_id= test.id,
-	}
+		texture_x= 45,
+		texture_y= 54,
+		texture_width= 8,
+		texture_height= 8
+	});
 
-	player = create_entity(entity_definition);
+	player.rect.x = 0;
 
-	player.rect.x = 0
-
-	-- local e2 = create_entity({
-	-- 	x= 64,
-	-- 	y= 64,
-	-- 	width= test.rect.width,
-	-- 	height= test.rect.height,
-	-- 	r= 255,
-	-- 	hspeed= 50,
-	-- 	texture_id= test.id,
-	-- 	texture_width= test.rect.width,
-	-- 	texture_height= test.rect.height
-	-- });
-
-	-- print(e.id);
-	-- print("game_start!")
+	-- Distorted tilemap
+	local something = create_entity({
+		x= 256,
+		y= 256,
+		width= test.rect.width*2,
+		height= test.rect.height*2,
+		texture_id= test.id
+	});
 end
 
 function game_step()
