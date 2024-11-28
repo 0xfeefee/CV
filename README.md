@@ -53,5 +53,5 @@ to find, I could have used tags for specific versions but this way its less erro
 - [sol2-v3.3.0](https://github.com/0xfeefee/sol2-v3.3.0)
 
 ### Screenshots
-![First working iteration of sprite rendering - v.0.5.0](./docs/screenshots/v5.0.0.PNG)
+![First working iteration of sprite rendering - v.0.5.0](https://github.com/0xfeefee/CV/blob/main/docs/screenshots/v0.5.0.PNG)
 
