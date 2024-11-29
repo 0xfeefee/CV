@@ -2,12 +2,14 @@
 require("common") -- Defines: the Lua API which will be preloaded in future versions.
 
 player = nil
+click = nil
 
 function game_begin()
 	-- expected id: 0, no components
 	create_entity({});
 
 	test = cv.load_texture("tilemap");
+	click = cv.load_sound("click", 1.0, 1.0);
 
 	-- First pixel guy in the { tilemap }, scale: 16x
 	player = create_entity({
@@ -41,18 +43,15 @@ function game_begin()
 end
 
 function game_step()
-	if player.color.r > 0 then
-		player.color.r = player.color.r - 1
-	end
-
 	if cv.is_key_pressed(Key.A) then
-		print("A was pressed!")
 		player.velocity.x = -1 * player.velocity.x
+		cv.play_sound(click);
 	end
 
 	if cv.is_key_pressed(Key.B) then
-		print("B was pressed!")
+		cv.play_sound(click)
 		player.velocity.y = -1 * player.velocity.y
+		cv.play_sound(click);
 	end
 end
 

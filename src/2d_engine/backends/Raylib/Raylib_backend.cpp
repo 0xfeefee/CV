@@ -1,6 +1,5 @@
 
 // Implements:
-#include "base.pch.hpp"
 #include <2d_engine/backend_hook.hpp>
 
 // Dependencies:
@@ -8,8 +7,6 @@
 #include <2d_engine/2d_engine_api.hpp>
 #include <2d_engine/frontend_hook.hpp>
 #include <2d_engine/features/systems.hpp>
-#include <string>
-#include <unordered_map>
 
 // Dependencies (3rd_party):
 // Workaround the Raylib name clashes with { windows.h }, does not work with Clang!
@@ -45,17 +42,22 @@ namespace cv {
 
     // @todo: replace this...
     constexpr int MAX_TEXTURE_COUNT = 8;
-    typedef std::unordered_map<std::string, rl::Texture2D> Texture_Map;
+    constexpr int MAX_SOUND_COUNT   = 16;
 
     struct Engine_Context {
         bool         should_run;
         rl::Color    clear_color;
         s32x2        window_size;
-        // Texture_Map  loaded_textures;
+
         Array<rl::Texture2D> textures;
+        Array<rl::Sound>     sounds;
 
         Engine_Context()
-        : clear_color({45, 45, 45, 255}), should_run(true), window_size({0, 0}), textures(MAX_TEXTURE_COUNT) {
+        : clear_color({45, 45, 45, 255}),
+          should_run(true),
+          window_size({0, 0}),
+          textures(MAX_TEXTURE_COUNT),
+          sounds(MAX_SOUND_COUNT) {
         }
     };
 
@@ -89,6 +91,7 @@ namespace cv {
 
         // Create a window:
         rl::InitWindow(config->window_width, config->window_height, config->window_title.c_str());
+        rl::InitAudioDevice();
 
         /*
             When { VSYNC } is enabled the framerate will set to the monitor refresh rate, we can only get the
@@ -147,6 +150,7 @@ namespace cv {
         // Run user exit code:
         frontend_stop();
 
+        rl::CloseAudioDevice();
         rl::CloseWindow();
     }
 
@@ -211,6 +215,41 @@ namespace cv {
             0,
             { 255, 255, 255, 255 }
         );
+    }
+
+    Sound
+    load_sound(const std::string& sound_file_name, f32 volume, f32 pitch) {
+        Unique<Engine_Context>& context = get_context<Engine_Context>();
+
+        std::string path = sound_path(sound_file_name);
+        log_warn("Loading sound: {}", path);
+
+        rl::Sound sound = rl::LoadSound(path.c_str());
+        int sound_id = context->sounds.get_count();
+        context->sounds.add(sound);
+
+        // Potentially confusing naming...
+        Sound s(
+            sound_id,
+            volume,
+            pitch
+        );
+
+        log_warn("Sound: {}, {}, {}", s.id, s.volume, s.pitch);
+
+        return s;
+    }
+
+    void
+    play_sound(Sound& sound) {
+        Unique<Engine_Context>& context = get_context<Engine_Context>();
+        rl::Sound& source_sound         = context->sounds[sound.id];
+
+        // @todo: avoid repeating this too much!
+        // rl::SetSoundVolume(source_sound, sound.volume);
+        // rl::SetSoundPitch(source_sound, sound.pitch);
+
+        rl::PlaySound(source_sound);
     }
 
 } // cv

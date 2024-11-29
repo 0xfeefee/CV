@@ -107,28 +107,12 @@ namespace cv {
         return lua_entity_info;
     }
 
-    void
-    frontend_start() {
-        sol::state& lua = *get_context<sol::state>();
-
+    static inline void
+    bind_engine_api(sol::state& lua) {
         /*
-            Engine will load Lua sources from the { src } directory relative to the current working directory.
+        ## Types
         */
-        std::string project_root_dir = get_context<Engine_Config>()->root_dir;
-        std::string project_pattern  = fmt::format(";{}src/?.lua", project_root_dir);
-        std::string project_main     = fmt::format("{}src/main.lua", project_root_dir);
 
-        log_warn(
-            "project_root_dir: {}\nproject_pattern:{}\nproject_main: {}\n",
-            project_root_dir,
-            project_pattern,
-            project_main
-        );
-
-        lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::math, sol::lib::os);
-        lua["package"]["path"] = lua["package"]["path"].get<std::string>() + project_pattern;
-
-        // Bind the API:
         lua.new_usertype<Color>(
             "Color",
             sol::constructors<Color(), Color(u8, u8, u8), Color(u8, u8, u8, u8)>(),
@@ -161,8 +145,16 @@ namespace cv {
         lua.new_usertype<Texture>(
             "Texture",
             sol::constructors<Texture(int, f32x4)>(),
-            "id", &Texture::id,
+            "id",   &Texture::id,
             "rect", &Texture::rect
+        );
+
+        lua.new_usertype<Sound>(
+            "Sound",
+            sol::constructors<Sound(int, f32, f32)>(),
+            "id",     &Sound::id,
+            "volume", &Sound::volume,
+            "pitch",  &Sound::pitch
         );
 
         lua.new_enum<Keyboard_Key>("Key", {
@@ -172,7 +164,10 @@ namespace cv {
             // @todo: map the rest of the keyboard keys...
         });
 
-        sol::table api_bindings = lua.create_table();
+        /*
+        ## Functions
+        */
+        sol::table api_bindings = lua.create_table(); // @todo make this namespace the types too...
 
         // Lua specific:
         api_bindings.set_function("create_entity", create_entity);
@@ -184,8 +179,35 @@ namespace cv {
         api_bindings.set_function("clear_color", set_clear_color);
         api_bindings.set_function("is_key_pressed", is_key_pressed);
         api_bindings.set_function("load_texture", load_texture);
+        api_bindings.set_function("load_sound", load_sound);
+        api_bindings.set_function("play_sound", play_sound);
 
         lua["cv"] = api_bindings;
+    }
+
+    void
+    frontend_start() {
+        sol::state& lua = *get_context<sol::state>();
+
+        /*
+            Engine will load Lua sources from the { src } directory relative to the current working directory.
+        */
+        std::string project_root_dir = get_context<Engine_Config>()->root_dir;
+        std::string project_pattern  = fmt::format(";{}src/?.lua", project_root_dir);
+        std::string project_main     = fmt::format("{}src/main.lua", project_root_dir);
+
+        log_warn(
+            "project_root_dir: {}\nproject_pattern:{}\nproject_main: {}\n",
+            project_root_dir,
+            project_pattern,
+            project_main
+        );
+
+        lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::math, sol::lib::os);
+        lua["package"]["path"] = lua["package"]["path"].get<std::string>() + project_pattern;
+
+        // Bind the API:
+        bind_engine_api(lua);
 
         // Validate the main script:
         sol::load_result script = lua.load_file(project_main);

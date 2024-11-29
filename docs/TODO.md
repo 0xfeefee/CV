@@ -11,8 +11,8 @@ we are allowed to make suboptimal technical choices, though it should not be all
 - [ ] Implement the Raylib backend
 	* [X] Platform window.
 	* [X] Draw rectangles.
-	* [ ] Load and play sound.
-	* [ ] Keyboard and gamepad input.
+	* [X] Load and play sound.
+	* [X] Keyboard and gamepad input.
 	* [ ] Bitmap fonts, text rendering.
 	* [X] Load a texture, draw a subtexture.
 - [ ] Define the frontend hooks/API.

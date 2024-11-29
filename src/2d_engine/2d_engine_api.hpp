@@ -5,6 +5,7 @@
     We only support { PNG } images in order to make things as simple as possible, technically there's no reason
     to not support other formats, but it's good to set hard limitations.
 */
+#include <string>
 namespace cv {
 
     struct s32x2 {
@@ -29,7 +30,7 @@ namespace cv {
         f32 x;
         f32 y;
 
-        f32x2(f32 x = 0, f32 y = 0)
+        f32x2(f32 x = 0.0f, f32 y = 0.0f)
         : x(x), y(y) {}
     };
 
@@ -39,7 +40,7 @@ namespace cv {
         f32 z;
         f32 w;
 
-        f32x4(f32 x = 0, f32 y = 0, f32 z = 0, f32 w = 0)
+        f32x4(f32 x = 0.0f, f32 y = 0.0f, f32 z = 0.0f, f32 w = 0.0f)
         : x(x), y(y), z(z), w(w) {}
     };
 
@@ -53,6 +54,16 @@ namespace cv {
 
         Texture(int id = 0, f32x4 rect = {})
         : id(id), rect(rect) {}
+    };
+
+    // @todo: make the sound loading/playing happen in a separate thread since we do not need gfx context.
+    struct Sound {
+        int id;
+        f32 volume;
+        f32 pitch;
+
+        Sound(int id = 0, f32 volume = 0.0f, f32 pitch = 0.0f)
+        : id(id), volume(volume), pitch(pitch) {}
     };
 
     // Components:
@@ -107,6 +118,12 @@ namespace cv {
     void
     draw_texture(Texture& texture, const Rect& entity_rect);
 
+    Sound
+    load_sound(const std::string& sound_file_name, f32 volume, f32 pitch);
+
+    void
+    play_sound(Sound& sound);
+
     /*
     ## Common
 
@@ -115,5 +132,11 @@ namespace cv {
 
     std::string
     image_path(const std::string& file_name);
+
+    std::string
+    sound_path(const std::string& file_name);
+
+    std::string
+    font_path(const std::string& file_name);
 
 } // cv

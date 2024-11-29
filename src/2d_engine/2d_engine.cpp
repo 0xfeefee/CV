@@ -1,5 +1,6 @@
 
 // Implements:
+#include "base.pch.hpp"
 #include <2d_engine/2d_engine.hpp>
 
 // Dependencies:
@@ -62,6 +63,16 @@ namespace cv {
     std::string
     image_path(const std::string& file_name) {
         return get_context<Engine_Config>()->root_dir + "assets/images/" + file_name + ".png";
+    }
+
+    std::string
+    sound_path(const std::string& file_name) {
+        return get_context<Engine_Config>()->root_dir + "assets/sounds/" + file_name + ".wav";
+    }
+
+    std::string
+    font_path(const std::string& file_name) {
+        return get_context<Engine_Config>()->root_dir + "assets/fonts/" + file_name + ".ttf";
     }
 
 } // cv

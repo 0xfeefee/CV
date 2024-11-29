@@ -165,6 +165,11 @@ namespace cv {
 			return data[index];
 		}
 
+		int
+		get_count() {
+			return count;
+		}
+
 		~Array() {
 			delete data;
 			log_warn("~Array");
