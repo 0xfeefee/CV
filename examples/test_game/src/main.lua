@@ -1,8 +1,9 @@
 
 require("common") -- Defines: the Lua API which will be preloaded in future versions.
 
-player = nil
-click = nil
+player 		= nil
+click  	    = nil
+primary_fnt = nil
 
 function game_begin()
 	-- expected id: 0, no components
@@ -10,6 +11,7 @@ function game_begin()
 
 	test = cv.load_texture("tilemap");
 	click = cv.load_sound("click", 1.0, 1.0);
+	primary_fnt = cv.load_font("RedHatMono-Regular", 16);
 
 	-- First pixel guy in the { tilemap }, scale: 16x
 	player = create_entity({
@@ -39,6 +41,15 @@ function game_begin()
 		width= test.rect.width*2,
 		height= test.rect.height*2,
 		texture_id= test.id
+	});
+
+	local ent2 = create_entity({
+		x=100,
+		y=100,
+		width=1,
+		height=1,
+		text="Hello, World!",
+		font=primary_fnt
 	});
 end
 

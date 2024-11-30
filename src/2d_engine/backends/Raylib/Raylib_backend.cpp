@@ -1,5 +1,6 @@
 
 // Implements:
+#include "base.pch.hpp"
 #include <2d_engine/backend_hook.hpp>
 
 // Dependencies:
@@ -43,6 +44,7 @@ namespace cv {
     // @todo: replace this...
     constexpr int MAX_TEXTURE_COUNT = 8;
     constexpr int MAX_SOUND_COUNT   = 16;
+    constexpr int MAX_FONT_COUNT    = 16;
 
     struct Engine_Context {
         bool         should_run;
@@ -51,13 +53,15 @@ namespace cv {
 
         Array<rl::Texture2D> textures;
         Array<rl::Sound>     sounds;
+        Array<rl::Font>      fonts;
 
         Engine_Context()
         : clear_color({45, 45, 45, 255}),
           should_run(true),
           window_size({0, 0}),
           textures(MAX_TEXTURE_COUNT),
-          sounds(MAX_SOUND_COUNT) {
+          sounds(MAX_SOUND_COUNT),
+          fonts(MAX_FONT_COUNT) {
         }
     };
 
@@ -139,6 +143,7 @@ namespace cv {
             rl::ClearBackground(context->clear_color); {
                 registry->get_system<Rect_Renderer_System>().update();
                 registry->get_system<Texture_Renderer_System>().update();
+                registry->get_system<Text_Renderer_System>().update();
             } rl::EndDrawing();
 
             // Update window size:
@@ -250,6 +255,38 @@ namespace cv {
         // rl::SetSoundPitch(source_sound, sound.pitch);
 
         rl::PlaySound(source_sound);
+    }
+
+    Font
+    load_font(const std::string& font_file_name, int font_size) {
+        Unique<Engine_Context>& context = get_context<Engine_Context>();
+
+        std::string font_file_path = font_path(font_file_name);
+        log_warn("Loading font: {} with size: {}", font_file_path, font_size);
+
+        rl::Font source_font = rl::LoadFontEx(font_file_path.c_str(), font_size, nullptr, 0);
+        int font_id = context->fonts.get_count();
+        context->fonts.add(source_font);
+
+        return Font(font_id);
+    }
+
+    void
+    draw_text(const Text& text, f32x2 position) {
+        constexpr int default_spacing     = 2;
+        constexpr rl::Color default_color = {255,255,255,255};
+
+        Unique<Engine_Context>& context = get_context<Engine_Context>();
+        const rl::Font& source_font     = context->fonts[text.font.id];
+
+        rl::DrawTextEx(
+            source_font,
+            text.data.c_str(),
+            {position.x, position.y},
+            source_font.baseSize,
+            default_spacing,
+            default_color
+        );
     }
 
 } // cv

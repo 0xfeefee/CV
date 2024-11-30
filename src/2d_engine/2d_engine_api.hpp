@@ -66,6 +66,21 @@ namespace cv {
         : id(id), volume(volume), pitch(pitch) {}
     };
 
+    struct Font {
+        int id;
+
+        Font(int id = 0)
+        : id(id) {}
+    };
+
+    struct Text {
+        std::string data; //@todo: replace with a reusable buffer
+        Font        font;
+
+        Text(std::string data = "", Font font = {})
+        : data(data), font(font) {}
+    };
+
     // Components:
     typedef f32x4 Rect;
     typedef u8x4  Color;
@@ -123,6 +138,12 @@ namespace cv {
 
     void
     play_sound(Sound& sound);
+
+    Font
+    load_font(const std::string& font_file_name, int font_size);
+
+    void
+    draw_text(const Text& text, f32x2 position);
 
     /*
     ## Common

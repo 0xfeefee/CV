@@ -104,6 +104,16 @@ namespace cv {
             );
         }
 
+        // Text
+        if (def["text"].valid()) {
+            lua_entity_info["text"] = true;
+            registry->add_component<Text>(
+                entity,
+                "",
+                def["font"].get_or(0)
+            );
+        }
+
         return lua_entity_info;
     }
 
@@ -157,6 +167,19 @@ namespace cv {
             "pitch",  &Sound::pitch
         );
 
+        lua.new_usertype<Font>(
+            "Font",
+            sol::constructors<Font(int)>(),
+            "id", &Font::id
+        );
+
+        lua.new_usertype<Text>(
+            "Text",
+            sol::constructors<Text(std::string, Font)>(),
+            "data", &Text::data,
+            "font", &Text::font
+        );
+
         lua.new_enum<Keyboard_Key>("Key", {
             { "A", Keyboard_Key::KEY_A },
             { "B", Keyboard_Key::KEY_B },
@@ -181,6 +204,7 @@ namespace cv {
         api_bindings.set_function("load_texture", load_texture);
         api_bindings.set_function("load_sound", load_sound);
         api_bindings.set_function("play_sound", play_sound);
+        api_bindings.set_function("load_font", load_font);
 
         lua["cv"] = api_bindings;
     }

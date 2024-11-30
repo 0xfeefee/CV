@@ -56,6 +56,7 @@ namespace cv {
         registry->add_system<Rect_Renderer_System>();
         registry->add_system<Basic_Velocity_System>();
         registry->add_system<Texture_Renderer_System>();
+        registry->add_system<Text_Renderer_System>();
 
         initialize_and_start_backend();
     }
