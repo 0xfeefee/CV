@@ -112,7 +112,11 @@ endif()
 
 ## Platform specific variables:
 if (WIN32)
-	add_compile_definitions(PROJECT_PLATFORM_WIN64=1)
+	add_compile_definitions(
+		PROJECT_PLATFORM_WIN64=1
+		WIN32_LEAN_AND_MEAN=1
+		NOMINMAX=1
+	)
 	set(VENDOR "${VENDOR}/Win64")
 	set(BUILD_PLATFORM "WIN64")
 	set(BUILD_PLATFORM__WIN64 ON)

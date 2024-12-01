@@ -6,6 +6,7 @@
 #include <2d_engine/2d_engine.hpp>
 #include <2d_engine/2d_engine_api.hpp>
 #include <2d_engine/ecs.hpp>
+#include <string>
 
 // Dependencies (3rd_party):
 #define SOL_NO_EXCEPTIONS 1
@@ -32,6 +33,11 @@ namespace cv {
     static Velocity&
     get_velocity(const Entity& entity) {
         return get_context<Registry>()->get_component<Velocity>(entity);
+    }
+
+    static Texture&
+    get_texture(const Entity& entity) {
+        return get_context<Registry>()->get_component<Texture>(entity);
     }
 
     /*
@@ -109,10 +115,12 @@ namespace cv {
             lua_entity_info["text"] = true;
             registry->add_component<Text>(
                 entity,
-                "",
-                def["font"].get_or(0)
+                def["text"].get_or(std::string("Lorem Ipsum")),
+                def["font"].get_or(Font())
             );
         }
+
+        log_warn("Done!");
 
         return lua_entity_info;
     }
@@ -197,6 +205,7 @@ namespace cv {
         api_bindings.set_function("get_rect", get_rect);
         api_bindings.set_function("get_color", get_color);
         api_bindings.set_function("get_velocity", get_velocity);
+        api_bindings.set_function("get_texture", get_texture);
 
         // Directly from engine API:
         api_bindings.set_function("clear_color", set_clear_color);

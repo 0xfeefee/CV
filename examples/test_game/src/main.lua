@@ -11,6 +11,7 @@ function game_begin()
 
 	test = cv.load_texture("tilemap");
 	click = cv.load_sound("click", 1.0, 1.0);
+	test_fnt = cv.load_font("Poppins-Medium", 20);
 	primary_fnt = cv.load_font("RedHatMono-Regular", 16);
 
 	-- First pixel guy in the { tilemap }, scale: 16x
@@ -53,7 +54,7 @@ function game_begin()
 	});
 end
 
-function game_step()
+function game_step(dt)
 	if cv.is_key_pressed(Key.A) then
 		player.velocity.x = -1 * player.velocity.x
 		cv.play_sound(click);
@@ -64,6 +65,8 @@ function game_step()
 		player.velocity.y = -1 * player.velocity.y
 		cv.play_sound(click);
 	end
+
+	player.texture.rect.x = player.texture.rect.x + 1 * dt
 end
 
 function game_end()

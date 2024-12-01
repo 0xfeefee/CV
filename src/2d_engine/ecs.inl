@@ -157,10 +157,8 @@ namespace cv {
             component_pools[component_type_id]
         );
 
-        // Create a new component of this type:
+        // Create a new component of this type & add it to the component pool:
         T_Component new_component(std::forward<T_Component_Args>(args)...);
-
-        // Add it to the component pool:
         component_pool->set(entity_id, new_component);
 
         // Update the component signature for the entity:

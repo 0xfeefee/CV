@@ -16,5 +16,9 @@ function create_entity(def)
 		entity.velocity = cv.get_velocity(entity.id)
 	end
 
+	if entity.texture then
+		entity.texture = cv.get_texture(entity.id)
+	end
+
 	return entity
 end

@@ -1,6 +1,5 @@
 
 // Implements:
-#include "base.pch.hpp"
 #include <2d_engine/backend_hook.hpp>
 
 // Dependencies:
@@ -12,6 +11,12 @@
 // Dependencies (3rd_party):
 // Workaround the Raylib name clashes with { windows.h }, does not work with Clang!
 namespace rl {
+    #if PROJECT_PLATFORM_WIN64
+        // Undef the macros which clash with raylib functions:
+        #undef DrawText
+        #undef DrawTextEx
+    #endif
+
     #include <raylib.h>
 
     /*
@@ -279,14 +284,18 @@ namespace cv {
         Unique<Engine_Context>& context = get_context<Engine_Context>();
         const rl::Font& source_font     = context->fonts[text.font.id];
 
+        const char* str = text.data.c_str();
+
         rl::DrawTextEx(
             source_font,
-            text.data.c_str(),
-            {position.x, position.y},
+            str,
+            { position.x, position.y },
             source_font.baseSize,
             default_spacing,
             default_color
         );
+
+        log_warn("BlaBla!");
     }
 
 } // cv
