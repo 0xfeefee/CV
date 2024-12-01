@@ -4,6 +4,7 @@ bin/*
 docs/profiler/*
 .w_scripts/
 .clangd
+docs/debugger/*
 
 # Exceptions:
 !docs/profiler/.gitkeep

@@ -59,4 +59,3 @@ to find, I could have used tags for specific versions but this way its less erro
 
 ### Screenshots
 ![First working iteration of sprite rendering - v.0.5.0](https://github.com/0xfeefee/CV/blob/main/docs/screenshots/v0.5.0.PNG)
-
