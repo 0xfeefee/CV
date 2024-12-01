@@ -22,7 +22,7 @@ we are allowed to make sub-optimal technical choices, though it should not be al
 	* [X] Load source relative to current directory.
 
 ## Beta
-Alpa is a rough draft of the 2D engine and structure of the program, Beta has to build on top of
+Alpha is a rough draft of the 2D engine and structure of the program, Beta has to build on top of
 it and define the edges.
 
 - [ ] Render the game within a 3D scene.
@@ -36,8 +36,13 @@ it and define the edges.
 ## Gamma
 Remove any rough edges, optimize, restructure when necessary, add more frontend/backend options.
 
+- [ ] Clean up the structure.
+- [ ] Profile and optimize the shared core.
 - [ ] Add Wren frontend
 - [ ] Add Python/Ruby or JS frontend.
 - [ ] Add DirectX backend.
 - [ ] Add the custom software rendered backend?
 - [ ] Add the server, store games on cloud?
+
+## TBD...
+...

@@ -42,5 +42,5 @@
 - 2024-11-30: Added basic text rendering support, stubs for Wren, Ruby, DirectX in stash!
 
 ## v0.6.0
-- 2024-11-31: Fixed bug which caused rendering of text to fail, due to clash with `{ windows.h }`.
+- 2024-11-01: Fixed bug which caused rendering of text to fail, due to clash with `{ windows.h }`.
 - 2024-12-01: Added the DirectX backend stub.
