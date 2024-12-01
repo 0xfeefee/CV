@@ -11,8 +11,7 @@ function game_begin()
 
 	test = cv.load_texture("tilemap");
 	click = cv.load_sound("click", 1.0, 1.0);
-	test_fnt = cv.load_font("Poppins-Medium", 20);
-	primary_fnt = cv.load_font("RedHatMono-Regular", 16);
+	primary_fnt = cv.load_font("RedHatMono-Regular", 40);
 
 	-- First pixel guy in the { tilemap }, scale: 16x
 	player = create_entity({
@@ -33,8 +32,6 @@ function game_begin()
 		texture_height= 8
 	});
 
-	player.rect.x = 0;
-
 	-- Distorted tilemap
 	local something = create_entity({
 		x= 256,
@@ -50,7 +47,11 @@ function game_begin()
 		width=1,
 		height=1,
 		text="Hello, World!",
-		font=primary_fnt
+		font=primary_fnt,
+		font_r=255,
+		font_g=0,
+		font_b=0,
+		font_a=255
 	});
 end
 

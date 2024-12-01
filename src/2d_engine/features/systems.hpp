@@ -2,11 +2,13 @@
 #pragma once
 
 // Implements:
-#include "base.pch.hpp"
 #include <2d_engine/ecs.hpp>
+
+// Dependencies:
 #include <2d_engine/2d_engine_api.hpp>
-
-
+/*
+    @todo: the painters algorithm needs z-sorting...
+*/
 namespace cv {
 
     /*

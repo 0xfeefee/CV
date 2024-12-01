@@ -1,34 +1,37 @@
 # TODO
-A brief roadmap.
+A brief roadmap (not entirely accurate).
 
 ## Alpha
 At first we keep the project `Windows + MSVC` only in order to make progress faster. Goal of the
 first stage is to have a working version with enough features to be presentable. In this stage
-we are allowed to make suboptimal technical choices, though it should not be all of them.
+we are allowed to make sub-optimal technical choices, though it should not be all of them.
 
-- [ ] Define the 2D engine API.
+- [X] Define the 2D engine API.
 - [X] Implement the basic ECS, shared by all backends.
-- [ ] Implement the Raylib backend
+- [X] Implement the Raylib backend (first pass)
 	* [X] Platform window.
 	* [X] Draw rectangles.
 	* [X] Load and play sound.
 	* [X] Keyboard and gamepad input.
-	* [ ] Bitmap fonts, text rendering.
+	* [X] Bitmap fonts, text rendering.
 	* [X] Load a texture, draw a subtexture.
-- [ ] Define the frontend hooks/API.
-- [ ] Implement the Lua frontend.
+- [X] Define the frontend hooks/API.
+- [X] Implement the Lua frontend. (first pass)
 	* [X] Map lifecycle functions.
-	* [ ] Map basic engine functionalities.
-	* [ ] Load source relative to current directory.
+	* [X] Map basic engine functionalities.
+	* [X] Load source relative to current directory.
 
 ## Beta
-Render the game within a 3D scene, ensure all features necessary are supported.
+Alpa is a rough draft of the 2D engine and structure of the program, Beta has to build on top of
+it and define the edges.
 
-- [ ] Add support for loading .obj models (or .dae for entire scene at once?)
-- [ ] Model the scene in blender.
-- [ ] Add simple the CRT shader for the virtual screen.
-- [ ] Render & test.
-- [ ] Implement a simple demo game.
+- [ ] Render the game within a 3D scene.
+	* [ ] Render the output of 2d engine to an offscreen texture.
+	* [ ] Add support for loading .obj models (or .dae for entire scene at once?)
+	* [ ] Model the scene in blender.
+	* [ ] Add simple the CRT shader for the virtual screen.
+	* [ ] Render & test.
+	* [ ] Implement a simple demo game.
 
 ## Gamma
 Remove any rough edges, optimize, restructure when necessary, add more frontend/backend options.
@@ -37,6 +40,4 @@ Remove any rough edges, optimize, restructure when necessary, add more frontend/
 - [ ] Add Python/Ruby or JS frontend.
 - [ ] Add DirectX backend.
 - [ ] Add the custom software rendered backend?
-
-## The end?
-What is the end goal?
+- [ ] Add the server, store games on cloud?

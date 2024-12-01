@@ -37,3 +37,10 @@
 
 ## v0.5.0
 - 2024-11-27: Adding the texture rendering API/systems.
+- 2024-11-28: Make subtextures render correctly, allow textures to be modified in the frontend.
+- 2024-11-29: Added basic sound support.
+- 2024-11-30: Added basic text rendering support, stubs for Wren, Ruby, DirectX in stash!
+
+## v0.6.0
+- 2024-11-31: Fixed bug which caused rendering of text to fail, due to clash with `{ windows.h }`.
+- 2024-12-01: Added the DirectX backend stub.

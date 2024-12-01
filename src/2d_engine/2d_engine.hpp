@@ -11,10 +11,10 @@ namespace cv {
     */
     typedef u8 Engine_Flags;
     enum Engine_Flags_ : u8 {
-        Engine_Flags_None       = 0,        // 0000 0000
-        Engine_Flags_Vsync      = 1 << 0,   // 0000 0001
-        Engine_Flags_Fullscreen = 1 << 1,   // 0000 0010
-        Engine_Flags_Borderless = 1 << 2    // 0000 0100
+        Engine_Flags_None          = 0,        // 0000 0000
+        Engine_Flags_Vsync         = 1 << 0,   // 0000 0001
+        Engine_Flags_Fullscreen    = 1 << 1,   // 0000 0010
+        Engine_Flags_No_Decoration = 1 << 2    // 0000 0100
     };
 
     /*
@@ -31,6 +31,11 @@ namespace cv {
         s16           window_height     = 600;
         s16           desired_framerate = 60;
         Engine_Flags  flags             = Engine_Flags_None;
+
+    #if PROJECT_ENGINE_BACKEND_DIRECTX
+        HINSTANCE       instance;
+        int             cmd_show;
+    #endif
     };
 
     /*

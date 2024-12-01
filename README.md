@@ -2,6 +2,11 @@
 This is just a basic demo of programming skills, not a real product. It will be continually
 updated until I'm done with search.
 
+## Status
+- In progress
+	* see: [TODO/](./docs/TODO.md) for a rough roadmap.
+	* see: [Time/](./docs/Time) for time tracking.
+
 ## Idea (subject to change)
 - A tiny 2D game engine.
 - Backend agnostic.

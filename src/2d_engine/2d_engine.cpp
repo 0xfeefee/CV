@@ -1,6 +1,5 @@
 
 // Implements:
-#include "base.pch.hpp"
 #include <2d_engine/2d_engine.hpp>
 
 // Dependencies:
@@ -52,6 +51,9 @@ namespace cv {
             log_warn("Empty config value passed for: root_dir\n* Falling back to: \"{}\"", config.root_dir);
         }
 
+        /*
+            Add every system to registry.
+        */
         Unique<Registry>& registry = get_context<Registry>();
         registry->add_system<Rect_Renderer_System>();
         registry->add_system<Basic_Velocity_System>();
@@ -61,6 +63,9 @@ namespace cv {
         initialize_and_start_backend();
     }
 
+    /*
+        Resources intentionally only support 1 extension, in order to simplify and reduce scope further...
+    */
     std::string
     image_path(const std::string& file_name) {
         return get_context<Engine_Config>()->root_dir + "assets/images/" + file_name + ".png";

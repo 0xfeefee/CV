@@ -6,7 +6,6 @@
 #include <2d_engine/2d_engine.hpp>
 #include <2d_engine/2d_engine_api.hpp>
 #include <2d_engine/ecs.hpp>
-#include <string>
 
 // Dependencies (3rd_party):
 #define SOL_NO_EXCEPTIONS 1
@@ -81,7 +80,7 @@ namespace cv {
                 def["hspeed"].get_or(0.0f),
                 def["vspeed"].get_or(0.0f)
             );
-            }
+        }
 
         // Color:
         if (def["r"].valid() || def["g"].valid() || def["b"].valid() || def["a"].valid()) {
@@ -116,11 +115,15 @@ namespace cv {
             registry->add_component<Text>(
                 entity,
                 def["text"].get_or(std::string("Lorem Ipsum")),
-                def["font"].get_or(Font())
+                def["font"].get_or(Font()),
+                Color(
+                    def["font_r"].get_or(0),
+                    def["font_g"].get_or(0),
+                    def["font_b"].get_or(0),
+                    def["font_a"].get_or(255)
+                )
             );
         }
-
-        log_warn("Done!");
 
         return lua_entity_info;
     }
@@ -183,9 +186,10 @@ namespace cv {
 
         lua.new_usertype<Text>(
             "Text",
-            sol::constructors<Text(std::string, Font)>(),
+            sol::constructors<Text(std::string, Font, Color)>(),
             "data", &Text::data,
-            "font", &Text::font
+            "font", &Text::font,
+            "color", &Text::color
         );
 
         lua.new_enum<Keyboard_Key>("Key", {

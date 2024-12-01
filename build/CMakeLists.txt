@@ -17,7 +17,7 @@ set(BUILD_ENABLE_LOGS       ON 		     CACHE STRING "Enable build logs")
 
 ## Create the project:
 project(${PROJECT_NAME}
-	VERSION 0.5.0
+	VERSION 0.6.0
 	LANGUAGES C CXX
 )
 
@@ -48,8 +48,10 @@ set(CMAKE_BUILD_TYPE   ${BUILD_TYPE})
 ## Backend selection:
 if (PROJECT_ENGINE_BACKEND STREQUAL "Raylib")
 	set(BUILD_BACKEND_RAYLIB  ON)
+	add_compile_definitions(PROJECT_ENGINE_BACKEND_RAYLIB=1)
 elseif (PROJECT_ENGINE_BACKEND STREQUAL "DirectX")
 	set(BUILD_BACKEND_DIRECTX ON)
+	add_compile_definitions(PROJECT_ENGINE_BACKEND_DIRECTX=1)
 else()
 	message(FATAL_ERROR "Unknown backend selected: ${PROJECT_ENGINE_BACKEND}")
 endif()
@@ -165,6 +167,14 @@ if (BUILD_BACKEND_RAYLIB)
 	)
 endif()
 
+if (BUILD_BACKEND_DIRECTX)
+	list(APPEND VENDOR_LIBRARIES
+		d3d11
+		dxgi
+		d3dcompiler
+	)
+endif()
+
 ## Add: frontend
 if (BUILD_FRONTEND_LUA)
 	## Lua
@@ -214,6 +224,13 @@ target_precompile_headers(${BUILD_EXECUTABLE_NAME}
 	PRIVATE
 	${SRC}/base.pch.hpp
 )
+
+if (BUILD_BACKEND_DIRECTX)
+	target_link_options(${BUILD_EXECUTABLE_NAME}
+		PRIVATE
+		/ENTRY:WinMainCRTStartup
+	)
+endif()
 
 target_link_libraries(${BUILD_EXECUTABLE_NAME}
 	PRIVATE

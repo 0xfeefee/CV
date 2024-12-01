@@ -52,10 +52,9 @@ namespace cv {
     constexpr int MAX_FONT_COUNT    = 16;
 
     struct Engine_Context {
-        bool         should_run;
-        rl::Color    clear_color;
-        s32x2        window_size;
-
+        bool                 should_run;
+        rl::Color            clear_color;
+        s32x2                window_size;
         Array<rl::Texture2D> textures;
         Array<rl::Sound>     sounds;
         Array<rl::Font>      fonts;
@@ -84,7 +83,7 @@ namespace cv {
 
         // Translate Engine_Flags to raylib Config_Flags:
         int raylib_flags = 0;
-        if (config->flags & Engine_Flags_Borderless) {
+        if (config->flags & Engine_Flags_No_Decoration) {
             raylib_flags |= rl::FLAG_WINDOW_UNDECORATED;
         }
 
@@ -232,22 +231,16 @@ namespace cv {
         Unique<Engine_Context>& context = get_context<Engine_Context>();
 
         std::string path = sound_path(sound_file_name);
-        log_warn("Loading sound: {}", path);
 
         rl::Sound sound = rl::LoadSound(path.c_str());
         int sound_id = context->sounds.get_count();
         context->sounds.add(sound);
 
-        // Potentially confusing naming...
-        Sound s(
+        return Sound(
             sound_id,
             volume,
             pitch
         );
-
-        log_warn("Sound: {}, {}, {}", s.id, s.volume, s.pitch);
-
-        return s;
     }
 
     void
@@ -279,23 +272,19 @@ namespace cv {
     void
     draw_text(const Text& text, f32x2 position) {
         constexpr int default_spacing     = 2;
-        constexpr rl::Color default_color = {255,255,255,255};
+        constexpr rl::Color default_color = { 255,255,255,255 };
 
         Unique<Engine_Context>& context = get_context<Engine_Context>();
         const rl::Font& source_font     = context->fonts[text.font.id];
 
-        const char* str = text.data.c_str();
-
         rl::DrawTextEx(
             source_font,
-            str,
+            text.data.c_str(),
             { position.x, position.y },
             source_font.baseSize,
             default_spacing,
-            default_color
+            rl::to_color(text.color)
         );
-
-        log_warn("BlaBla!");
     }
 
 } // cv

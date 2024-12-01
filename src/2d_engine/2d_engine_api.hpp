@@ -5,7 +5,6 @@
     We only support { PNG } images in order to make things as simple as possible, technically there's no reason
     to not support other formats, but it's good to set hard limitations.
 */
-#include <string>
 namespace cv {
 
     struct s32x2 {
@@ -44,6 +43,11 @@ namespace cv {
         : x(x), y(y), z(z), w(w) {}
     };
 
+    // Components:
+    typedef f32x4 Rect;
+    typedef u8x4  Color;
+    typedef f32x2 Velocity;
+
     /*
         Texture id is used to identify the GPU texture which will be used and rect a part of that texture to
         use.
@@ -76,15 +80,12 @@ namespace cv {
     struct Text {
         std::string data; //@todo: replace with a reusable buffer
         Font        font;
+        Color       color;
 
-        Text(std::string data = "", Font font = {})
-        : data(data), font(font) {}
+        Text(std::string data = "", Font font = {}, Color color = {255,255,255,255})
+        : data(data), font(font), color(color) {}
     };
 
-    // Components:
-    typedef f32x4 Rect;
-    typedef u8x4  Color;
-    typedef f32x2 Velocity;
 
     // Keys:
     enum Keyboard_Key {
