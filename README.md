@@ -5,7 +5,7 @@ updated until I'm done with search.
 ## Status
 - In progress
 	* see: [TODO/](./docs/TODO.md) for a rough roadmap.
-	* see: [Time/](./docs/Time) for time tracking.
+	* see: [Time/](./docs/Time.md) for time tracking.
 
 ## Idea (subject to change)
 - A tiny 2D game engine.
@@ -50,7 +50,8 @@ given configuration variables:
 ### Dependencies
 In order to make builds as pleasant as possible all dependencies are located within the project
 as a git submodule. Exact version of every dependency is hosted as a "fork" to ensure it's easy
-to find, I could have used tags for specific versions but this way its less error-prone:
+to find. Right now these submodules are windows specific but in the future builds they will be
+tagged for "Linux64" and "Windows64", to enable cross platform builds.
 
 - [spdlog-v1.14.1](https://github.com/0xfeefee/spdlog-v1.14.1)
 - [raylib-v5.0](https://github.com/0xfeefee/raylib-v5.0)

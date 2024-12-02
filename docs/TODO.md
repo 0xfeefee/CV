@@ -23,7 +23,8 @@ we are allowed to make sub-optimal technical choices, though it should not be al
 
 ## Beta
 Alpha is a rough draft of the 2D engine and structure of the program, Beta has to build on top of
-it and define the edges.
+it and define the edges. Here we figure out the exact scope of the application and focus on
+building in that direction.
 
 - [ ] Render the game within a 3D scene.
 	* [ ] Render the output of 2d engine to an offscreen texture.
@@ -34,7 +35,8 @@ it and define the edges.
 	* [ ] Implement a simple demo game.
 
 ## Gamma
-Remove any rough edges, optimize, restructure when necessary, add more frontend/backend options.
+Beta stage defines the scope and implements support for features within that scope. Gamma removes
+any rough edges and polishes what Beta stage defined.
 
 - [ ] Clean up the structure.
 - [ ] Profile and optimize the shared core.

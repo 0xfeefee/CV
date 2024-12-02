@@ -1,5 +1,6 @@
 
 // Implements:
+#include "spdlog/fmt/bundled/core.h"
 #include <2d_engine/backend_hook.hpp>
 
 // Dependencies:
@@ -124,6 +125,13 @@ namespace cv {
         // Run user code to init/start the game:
         frontend_start();
 
+        // @temporary
+        int frame_counter = 0;
+        int frame_texture_count = 0;
+        bool render_to_texture_instead = true;
+
+        rl::RenderTexture2D frame_texture = rl::LoadRenderTexture(config->window_width, config->window_height);
+
         while (context->should_run) {
             // Wait out the extra time
             f64 s_to_wait = S_PER_FRAME - (rl::GetTime() - last_elapsed_s);
@@ -143,16 +151,39 @@ namespace cv {
 
             // Render:
             context->should_run = !rl::WindowShouldClose();
-            rl::BeginDrawing();
-            rl::ClearBackground(context->clear_color); {
-                registry->get_system<Rect_Renderer_System>().update();
-                registry->get_system<Texture_Renderer_System>().update();
-                registry->get_system<Text_Renderer_System>().update();
-            } rl::EndDrawing();
+
+            // @temporary: POC output to texture, we also save it to disk, which is not necessary.
+            if (render_to_texture_instead) {
+                rl::BeginTextureMode(frame_texture);
+                    registry->get_system<Rect_Renderer_System>().update();
+                    registry->get_system<Texture_Renderer_System>().update();
+                    registry->get_system<Text_Renderer_System>().update();
+                rl::EndTextureMode();
+
+                std::string output_texture_name = fmt::format("frame_output/frame_{}.png", frame_texture_count);
+                rl::Image textureImage = rl::LoadImageFromTexture(frame_texture.texture);
+                rl::ExportImage(textureImage, output_texture_name.c_str());
+                rl::UnloadImage(textureImage);
+
+                render_to_texture_instead = false;
+            } else {
+                rl::BeginDrawing();
+                rl::ClearBackground(context->clear_color); {
+                    registry->get_system<Rect_Renderer_System>().update();
+                    registry->get_system<Texture_Renderer_System>().update();
+                    registry->get_system<Text_Renderer_System>().update();
+                } rl::EndDrawing();
+            }
 
             // Update window size:
             if (rl::IsWindowResized()) {
                 context->window_size = { rl::GetScreenWidth(), rl::GetScreenHeight() };
+            }
+
+            if (frame_counter++ > config->desired_framerate) {
+                render_to_texture_instead = true;
+                frame_texture_count += 1;
+                frame_counter = 0;
             }
         }
 
