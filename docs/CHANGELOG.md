@@ -44,3 +44,5 @@
 ## v0.6.0
 - 2024-11-01: Fixed bug which caused rendering of text to fail, due to clash with `{ windows.h }`.
 - 2024-12-01: Added the DirectX backend stub.
+- 2024-12-02: Added output to texture POC for Raylib backend. `{ create_entity }` Lua function
+  is now correctly preloaded.

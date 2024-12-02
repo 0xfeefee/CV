@@ -10,7 +10,10 @@
 // Dependencies (3rd_party):
 #define SOL_NO_EXCEPTIONS 1
 #include <sol/sol.hpp>
-
+/*
+@todo: Factor this out so it's less messy, separate the bindings from the core.
+@todo: Preload the Lua common.
+*/
 namespace cv {
 
     struct Script_Context {
@@ -195,8 +198,30 @@ namespace cv {
         lua.new_enum<Keyboard_Key>("Key", {
             { "A", Keyboard_Key::KEY_A },
             { "B", Keyboard_Key::KEY_B },
-            { "C", Keyboard_Key::KEY_C }
-            // @todo: map the rest of the keyboard keys...
+            { "C", Keyboard_Key::KEY_C },
+            { "D", Keyboard_Key::KEY_D },
+            { "E", Keyboard_Key::KEY_E },
+            { "F", Keyboard_Key::KEY_F },
+            { "G", Keyboard_Key::KEY_G },
+            { "H", Keyboard_Key::KEY_H },
+            { "I", Keyboard_Key::KEY_I },
+            { "J", Keyboard_Key::KEY_J },
+            { "K", Keyboard_Key::KEY_K },
+            { "L", Keyboard_Key::KEY_L },
+            { "M", Keyboard_Key::KEY_M },
+            { "N", Keyboard_Key::KEY_N },
+            { "O", Keyboard_Key::KEY_O },
+            { "P", Keyboard_Key::KEY_P },
+            { "Q", Keyboard_Key::KEY_Q },
+            { "R", Keyboard_Key::KEY_R },
+            { "S", Keyboard_Key::KEY_S },
+            { "T", Keyboard_Key::KEY_T },
+            { "U", Keyboard_Key::KEY_U },
+            { "V", Keyboard_Key::KEY_V },
+            { "W", Keyboard_Key::KEY_W },
+            { "X", Keyboard_Key::KEY_X },
+            { "Y", Keyboard_Key::KEY_Y },
+            { "Z", Keyboard_Key::KEY_Z }
         });
 
         /*
@@ -222,6 +247,33 @@ namespace cv {
         lua["cv"] = api_bindings;
     }
 
+    static inline void
+    preload_common_api(sol::state& lua) {
+        lua.script(R"(
+            function create_entity(def)
+                local entity = cv.create_entity(def)
+
+                if entity.rect then
+                    entity.rect = cv.get_rect(entity.id)
+                end
+
+                if entity.color then
+                    entity.color = cv.get_color(entity.id)
+                end
+
+                if entity.velocity then
+                    entity.velocity = cv.get_velocity(entity.id)
+                end
+
+                if entity.texture then
+                    entity.texture = cv.get_texture(entity.id)
+                end
+
+                return entity
+            end
+        )");
+    }
+
     void
     frontend_start() {
         sol::state& lua = *get_context<sol::state>();
@@ -245,6 +297,7 @@ namespace cv {
 
         // Bind the API:
         bind_engine_api(lua);
+        preload_common_api(lua);
 
         // Validate the main script:
         sol::load_result script = lua.load_file(project_main);
