@@ -27,7 +27,7 @@ it and define the edges. Here we figure out the exact scope of the application a
 building in that direction.
 
 - [ ] Render the game within a 3D scene.
-	* [ ] Render the output of 2d engine to an offscreen texture.
+	* [X] Render the output of 2d engine to an offscreen texture.
 	* [ ] Add support for loading .obj models (or .dae for entire scene at once?)
 	* [ ] Model the scene in blender.
 	* [ ] Add simple the CRT shader for the virtual screen.

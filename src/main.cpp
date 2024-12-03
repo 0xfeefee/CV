@@ -35,7 +35,7 @@ using namespace cv;
         Engine_Config config;
         config.desired_framerate = 144;
         config.root_dir          = user_root_dir;
-        config.flags             = Engine_Flags_No_Decoration;
+        // config.flags             = Engine_Flags_No_Decoration;
 
         initialize_and_start(config);
         return 0;

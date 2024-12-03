@@ -46,3 +46,4 @@
 - 2024-12-01: Added the DirectX backend stub.
 - 2024-12-02: Added output to texture POC for Raylib backend. `{ create_entity }` Lua function
   is now correctly preloaded.
+- 2024-12-03: Added the POC of rendering the 2D game onto a plane in 3D space, for Raylib backend.

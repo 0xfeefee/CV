@@ -60,3 +60,4 @@ tagged for "Linux64" and "Windows64", to enable cross platform builds.
 
 ### Screenshots
 ![First working iteration of sprite rendering - v.0.5.0](https://github.com/0xfeefee/CV/blob/main/docs/screenshots/v0.5.0.PNG)
+![Rendering 2D game onto a plane in 3D space - v.0.6.0](https://github.com/0xfeefee/CV/blob/main/docs/screenshots/v0.6.0.PNG)

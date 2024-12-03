@@ -1,6 +1,5 @@
 
 // Implements:
-#include "spdlog/fmt/bundled/core.h"
 #include <2d_engine/backend_hook.hpp>
 
 // Dependencies:
@@ -118,19 +117,37 @@ namespace cv {
             }
         }
 
+        /*
+            Setup the render texture, 3D camera and a simple plane primitive.
+            - Camera faces the plane, we use the standard 45 degree FOV.
+            - Plane is 10x10 though perhaps we have to change the size depending on the 2d engine window
+            size.
+
+            We will render the output of the 2D game engine onto the render texture and use this as an albedo
+            map (color/diffuse map). Right now it will appear as transparent because we are clearing with the
+            same color as the rest of the screen.
+
+            When updating the camera we use the { FREE_CAMERA } mode which allows us to move it with
+            { W, A, S, D }
+        */
+        rl::RenderTexture2D frame_texture = rl::LoadRenderTexture(config->window_width, config->window_height);
+
+        rl::Camera3D camera = { 0 };
+        camera.position     = { 0.2f, 5.0f, 5.0f };
+        camera.target       = { 0.0f, 0.0f, 0.0f };
+        camera.up           = { 0.0f, 1.0f, 0.0f };
+        camera.fovy         = 45.0f;
+        camera.projection   = rl::CAMERA_PERSPECTIVE;
+
+        rl::Model plane = rl::LoadModelFromMesh(rl::GenMeshPlane(10.0f, 10.0f, 1, 1));
+        plane.materials[0].maps[rl::MATERIAL_MAP_DIFFUSE].texture = frame_texture.texture;
+
         // Main loop:
         const f64 S_PER_FRAME = 1.0/config->desired_framerate;
         f64 last_elapsed_s    = rl::GetTime();
 
         // Run user code to init/start the game:
         frontend_start();
-
-        // @temporary
-        int frame_counter = 0;
-        int frame_texture_count = 0;
-        bool render_to_texture_instead = true;
-
-        rl::RenderTexture2D frame_texture = rl::LoadRenderTexture(config->window_width, config->window_height);
 
         while (context->should_run) {
             // Wait out the extra time
@@ -149,41 +166,31 @@ namespace cv {
             frontend_step(delta_s);
             registry->get_system<Basic_Velocity_System>().update(delta_s);
 
+            // Update the 3D camera:
+            rl::UpdateCamera(&camera, rl::CAMERA_FREE);
+
             // Render:
             context->should_run = !rl::WindowShouldClose();
 
-            // @temporary: POC output to texture, we also save it to disk, which is not necessary.
-            if (render_to_texture_instead) {
-                rl::BeginTextureMode(frame_texture);
-                    registry->get_system<Rect_Renderer_System>().update();
-                    registry->get_system<Texture_Renderer_System>().update();
-                    registry->get_system<Text_Renderer_System>().update();
-                rl::EndTextureMode();
+            // Render the 2D engine scene onto the frame texture:
+            rl::BeginTextureMode(frame_texture);
+                rl::ClearBackground(context->clear_color);
+                registry->get_system<Rect_Renderer_System>().update();
+                registry->get_system<Texture_Renderer_System>().update();
+                registry->get_system<Text_Renderer_System>().update();
+            rl::EndTextureMode();
 
-                std::string output_texture_name = fmt::format("frame_output/frame_{}.png", frame_texture_count);
-                rl::Image textureImage = rl::LoadImageFromTexture(frame_texture.texture);
-                rl::ExportImage(textureImage, output_texture_name.c_str());
-                rl::UnloadImage(textureImage);
-
-                render_to_texture_instead = false;
-            } else {
-                rl::BeginDrawing();
-                rl::ClearBackground(context->clear_color); {
-                    registry->get_system<Rect_Renderer_System>().update();
-                    registry->get_system<Texture_Renderer_System>().update();
-                    registry->get_system<Text_Renderer_System>().update();
-                } rl::EndDrawing();
-            }
+            // Render the 3D scene:
+            rl::BeginDrawing();
+            rl::ClearBackground(context->clear_color); {
+                rl::BeginMode3D(camera);
+                rl::DrawModel(plane, { 0.0f, 0.0f, 0.0f }, 1.0f, rl::WHITE);
+                rl::EndMode3D();
+            } rl::EndDrawing();
 
             // Update window size:
             if (rl::IsWindowResized()) {
                 context->window_size = { rl::GetScreenWidth(), rl::GetScreenHeight() };
-            }
-
-            if (frame_counter++ > config->desired_framerate) {
-                render_to_texture_instead = true;
-                frame_texture_count += 1;
-                frame_counter = 0;
             }
         }
 

@@ -166,7 +166,7 @@ namespace cv {
 		}
 
 		int
-		get_count() {
+		get_count() const {
 			return count;
 		}
 
