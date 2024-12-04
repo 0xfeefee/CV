@@ -47,3 +47,6 @@
 - 2024-12-02: Added output to texture POC for Raylib backend. `{ create_entity }` Lua function
   is now correctly preloaded.
 - 2024-12-03: Added the POC of rendering the 2D game onto a plane in 3D space, for Raylib backend.
+
+## v0.7.0
+- 2024-12-04: Added a way to apply post-processing to the 2D game scene.

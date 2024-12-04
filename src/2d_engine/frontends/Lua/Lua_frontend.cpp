@@ -12,7 +12,7 @@
 #include <sol/sol.hpp>
 /*
 @todo: Factor this out so it's less messy, separate the bindings from the core.
-@todo: Preload the Lua common.
+@todo: Make the user experience better, now it feels a bit janky....
 */
 namespace cv {
 

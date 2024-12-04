@@ -69,6 +69,21 @@ namespace cv {
         }
     };
 
+
+    static const char* invert_fs = R"(
+        #version 330
+
+        in vec2 fragTexCoord;
+        out vec4 fragColor;
+
+        uniform sampler2D texture0;
+
+        void main() {
+            vec4 texColor = texture(texture0, fragTexCoord);
+            fragColor = vec4(1.0 - texColor.rgb, texColor.a);
+        }
+    )";
+
     void
     initialize_and_start_backend() {
         Unique<Engine_Config>&  config   = get_context<Engine_Config>();
@@ -117,20 +132,28 @@ namespace cv {
             }
         }
 
+
         /*
             Setup the render texture, 3D camera and a simple plane primitive.
             - Camera faces the plane, we use the standard 45 degree FOV.
             - Plane is 10x10 though perhaps we have to change the size depending on the 2d engine window
             size.
 
-            We will render the output of the 2D game engine onto the render texture and use this as an albedo
-            map (color/diffuse map). Right now it will appear as transparent because we are clearing with the
-            same color as the rest of the screen.
+            We will render the output of the 2D game engine onto the render texture, then we will render
+            this onto another offscreen texture to apply post processing, and this texture will be used as
+            an albedo map for the plane in 3D space.
+
+            { frame_texture } is the 2D game scene, { model_texture } is { frame_texture } with post-processing
+            applied (invert colors in this case). Since rendering to a texture effectively flips it,
+            rendering it again to apply post-processing flips it back to normal.
 
             When updating the camera we use the { FREE_CAMERA } mode which allows us to move it with
             { W, A, S, D }
         */
         rl::RenderTexture2D frame_texture = rl::LoadRenderTexture(config->window_width, config->window_height);
+        rl::RenderTexture2D model_texture = rl::LoadRenderTexture(config->window_width, config->window_height);
+
+        rl::Shader shader = rl::LoadShaderFromMemory(nullptr, invert_fs);
 
         rl::Camera3D camera = { 0 };
         camera.position     = { 0.2f, 5.0f, 5.0f };
@@ -140,7 +163,7 @@ namespace cv {
         camera.projection   = rl::CAMERA_PERSPECTIVE;
 
         rl::Model plane = rl::LoadModelFromMesh(rl::GenMeshPlane(10.0f, 10.0f, 1, 1));
-        plane.materials[0].maps[rl::MATERIAL_MAP_DIFFUSE].texture = frame_texture.texture;
+        plane.materials[0].maps[rl::MATERIAL_MAP_DIFFUSE].texture = model_texture.texture;
 
         // Main loop:
         const f64 S_PER_FRAME = 1.0/config->desired_framerate;
@@ -173,12 +196,20 @@ namespace cv {
             context->should_run = !rl::WindowShouldClose();
 
             // Render the 2D engine scene onto the frame texture:
-            rl::BeginTextureMode(frame_texture);
-                rl::ClearBackground(context->clear_color);
+            rl::BeginTextureMode(frame_texture); {
+                rl::ClearBackground({0,0,0,0});
                 registry->get_system<Rect_Renderer_System>().update();
                 registry->get_system<Texture_Renderer_System>().update();
                 registry->get_system<Text_Renderer_System>().update();
-            rl::EndTextureMode();
+            } rl::EndTextureMode();
+
+            // Apply post-processing:
+            rl::BeginTextureMode(model_texture); {
+                rl::ClearBackground({0,0,0,0});
+                rl::BeginShaderMode(shader);
+                rl::DrawTexture(frame_texture.texture, 0, 0, {255,255,255,255});
+                rl::EndShaderMode();
+            } rl::EndTextureMode();
 
             // Render the 3D scene:
             rl::BeginDrawing();

@@ -1,4 +1,4 @@
-# CV (v0.6.0)
+# CV (v0.7.0)
 This is just a basic demo of programming skills, not a real product. It will be continually
 updated until I'm done with search.
 

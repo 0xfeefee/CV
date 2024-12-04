@@ -12,8 +12,9 @@
 #include <d3d11.h>
 #include <dxgi.h>
 #include <d3dcompiler.h>
-
-
+/*
+    On hold until Raylib backend is fully implemented: now implementing 3D scene features.
+*/
 namespace cv {
 
     // DirectX backend context

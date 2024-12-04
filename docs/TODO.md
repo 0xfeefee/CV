@@ -30,6 +30,7 @@ building in that direction.
 	* [X] Render the output of 2d engine to an offscreen texture.
 	* [ ] Add support for loading .obj models (or .dae for entire scene at once?)
 	* [ ] Model the scene in blender.
+	* [X] Add post-processing support.
 	* [ ] Add simple the CRT shader for the virtual screen.
 	* [ ] Render & test.
 	* [ ] Implement a simple demo game.
