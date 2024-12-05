@@ -10,6 +10,7 @@
 
 // Dependencies (3rd party):
 #include <filesystem>
+#include <string>
 
 
 namespace cv {
@@ -79,6 +80,11 @@ namespace cv {
     std::string
     font_path(const std::string& file_name) {
         return get_context<Engine_Config>()->root_dir + "assets/fonts/" + file_name + ".ttf";
+    }
+
+    std::string
+    model_path(const std::string& file_name) {
+        return get_context<Engine_Config>()->root_dir + "assets/models/" + file_name + ".obj";
     }
 
 } // cv

@@ -161,4 +161,7 @@ namespace cv {
     std::string
     font_path(const std::string& file_name);
 
+    std::string
+    model_path(const std::string& file_name);
+
 } // cv

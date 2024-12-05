@@ -165,6 +165,8 @@ namespace cv {
         rl::Model plane = rl::LoadModelFromMesh(rl::GenMeshPlane(10.0f, 10.0f, 1, 1));
         plane.materials[0].maps[rl::MATERIAL_MAP_DIFFUSE].texture = model_texture.texture;
 
+        rl::Model cup = rl::LoadModel(model_path("Cup").c_str());
+
         // Main loop:
         const f64 S_PER_FRAME = 1.0/config->desired_framerate;
         f64 last_elapsed_s    = rl::GetTime();
@@ -216,6 +218,7 @@ namespace cv {
             rl::ClearBackground(context->clear_color); {
                 rl::BeginMode3D(camera);
                 rl::DrawModel(plane, { 0.0f, 0.0f, 0.0f }, 1.0f, rl::WHITE);
+                rl::DrawModel(cup, { 0.0f, 0.0f, 0.0f }, 0.1f, rl::WHITE);
                 rl::EndMode3D();
             } rl::EndDrawing();
 
