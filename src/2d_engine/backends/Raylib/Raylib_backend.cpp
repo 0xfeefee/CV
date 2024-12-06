@@ -18,6 +18,8 @@ namespace rl {
     #endif
 
     #include <raylib.h>
+    #include <rlgl.h>
+    #include <2d_engine/backends/Raylib/rlights.h>
 
     /*
     ## Helpers
@@ -69,8 +71,8 @@ namespace cv {
         }
     };
 
-
-    static const char* invert_fs = R"(
+    static cstr_t
+    invert_fs = R"(
         #version 330
 
         in vec2 fragTexCoord;
@@ -153,7 +155,7 @@ namespace cv {
         rl::RenderTexture2D frame_texture = rl::LoadRenderTexture(config->window_width, config->window_height);
         rl::RenderTexture2D model_texture = rl::LoadRenderTexture(config->window_width, config->window_height);
 
-        rl::Shader shader = rl::LoadShaderFromMemory(nullptr, invert_fs);
+        rl::Shader shader_2d = rl::LoadShaderFromMemory(nullptr, invert_fs);
 
         rl::Camera3D camera = { 0 };
         camera.position     = { 0.2f, 5.0f, 5.0f };
@@ -162,11 +164,20 @@ namespace cv {
         camera.fovy         = 45.0f;
         camera.projection   = rl::CAMERA_PERSPECTIVE;
 
-        rl::Model plane = rl::LoadModelFromMesh(rl::GenMeshPlane(10.0f, 10.0f, 1, 1));
+        rl::Model plane = rl::LoadModelFromMesh(rl::GenMeshPlane(20.0f, 20.0f, 1, 1));
         plane.materials[0].maps[rl::MATERIAL_MAP_DIFFUSE].texture = model_texture.texture;
 
         rl::Model cup = rl::LoadModel(model_path("Cup").c_str());
-        // cup.materials[0].maps[rl::MATERIAL_MAP_DIFFUSE].texture = model_texture.texture;
+        cup.materials[0].maps[rl::MATERIAL_MAP_DIFFUSE].color = rl::RED;
+
+        // rl::Shader shader_3d = rl::LoadShaderFromMemory(curvature_fs, nullptr);
+        // float curvature = 0.9f;
+        // rl::SetShaderValue(
+        //     shader_3d,
+        //     rl::GetShaderLocation(shader_3d, "curvature"),
+        //     &curvature,
+        //     rl::SHADER_UNIFORM_FLOAT
+        // );
 
         // Main loop:
         const f64 S_PER_FRAME = 1.0/config->desired_framerate;
@@ -174,6 +185,7 @@ namespace cv {
 
         // Run user code to init/start the game:
         frontend_start();
+        rl::DisableCursor();
 
         while (context->should_run) {
             // Wait out the extra time
@@ -208,8 +220,8 @@ namespace cv {
 
             // Apply post-processing:
             rl::BeginTextureMode(model_texture); {
-                rl::ClearBackground({0,0,0,0});
-                rl::BeginShaderMode(shader);
+                rl::ClearBackground({0,0,0,50});
+                rl::BeginShaderMode(shader_2d);
                 rl::DrawTexture(frame_texture.texture, 0, 0, {255,255,255,255});
                 rl::EndShaderMode();
             } rl::EndTextureMode();
@@ -218,7 +230,11 @@ namespace cv {
             rl::BeginDrawing();
             rl::ClearBackground(context->clear_color); {
                 rl::BeginMode3D(camera);
+                // rl::BeginShaderMode(shader_3d);
+                rl::rlDisableBackfaceCulling();
                 rl::DrawModel(plane, { 0.0f, 0.0f, 0.0f }, 1.0f, rl::WHITE);
+                rl::rlEnableBackfaceCulling();
+                // rl::EndShaderMode();
                 rl::DrawModel(cup, { 1.0f, -0.2f, -2.0f }, 0.1f, rl::WHITE);
                 rl::EndMode3D();
             } rl::EndDrawing();
