@@ -59,5 +59,9 @@ tagged for "Linux64" and "Windows64", to enable cross platform builds.
 - [sol2-v3.3.0](https://github.com/0xfeefee/sol2-v3.3.0)
 
 ### Screenshots
+First working iteration of the sprite renderer:
 ![First working iteration of sprite rendering - v.0.5.0](https://github.com/0xfeefee/CV/blob/main/docs/screenshots/v0.5.0.PNG)
+Rendering the 2D engine scene onto a plane in 3D space.
 ![Rendering 2D game onto a plane in 3D space - v.0.6.0](https://github.com/0xfeefee/CV/blob/main/docs/screenshots/v0.6.0.PNG)
+Applying post-processing to the 2D engine scene + loading `.obj` models.
+![Applying post-processing and loading OBJ models](https://github.com/0xfeefee/CV/blob/main/docs/screenshots/v0.7.0.PNG)

@@ -141,7 +141,7 @@ namespace cv {
 
             We will render the output of the 2D game engine onto the render texture, then we will render
             this onto another offscreen texture to apply post processing, and this texture will be used as
-            an albedo map for the plane in 3D space.
+            an diffuse map for the plane in 3D space.
 
             { frame_texture } is the 2D game scene, { model_texture } is { frame_texture } with post-processing
             applied (invert colors in this case). Since rendering to a texture effectively flips it,
@@ -166,6 +166,7 @@ namespace cv {
         plane.materials[0].maps[rl::MATERIAL_MAP_DIFFUSE].texture = model_texture.texture;
 
         rl::Model cup = rl::LoadModel(model_path("Cup").c_str());
+        // cup.materials[0].maps[rl::MATERIAL_MAP_DIFFUSE].texture = model_texture.texture;
 
         // Main loop:
         const f64 S_PER_FRAME = 1.0/config->desired_framerate;
@@ -218,7 +219,7 @@ namespace cv {
             rl::ClearBackground(context->clear_color); {
                 rl::BeginMode3D(camera);
                 rl::DrawModel(plane, { 0.0f, 0.0f, 0.0f }, 1.0f, rl::WHITE);
-                rl::DrawModel(cup, { 0.0f, 0.0f, 0.0f }, 0.1f, rl::WHITE);
+                rl::DrawModel(cup, { 1.0f, -0.2f, -2.0f }, 0.1f, rl::WHITE);
                 rl::EndMode3D();
             } rl::EndDrawing();
 
