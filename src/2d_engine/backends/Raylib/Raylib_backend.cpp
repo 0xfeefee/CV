@@ -1,5 +1,6 @@
 
 // Implements:
+#include "base.pch.hpp"
 #include <2d_engine/backend_hook.hpp>
 
 // Dependencies:
@@ -17,9 +18,15 @@ namespace rl {
         #undef DrawTextEx
     #endif
 
+    // #define RAYMATH_IMPLEMENTATION
+
     #include <raylib.h>
     #include <rlgl.h>
+
+    #define RLIGHTS_IMPLEMENTATION
     #include <2d_engine/backends/Raylib/rlights.h>
+
+    #define GLSL_VERSION 330
 
     /*
     ## Helpers
@@ -35,6 +42,10 @@ namespace rl {
     static inline rl::Color
     to_color(const cv::Color& color) {
         return { color.x, color.y, color.z, color.w };
+    }
+
+    Vector3 vec3_zero(void) {
+        return { 0.0f, 0.0f, 0.0f };
     }
 }
 
@@ -72,6 +83,124 @@ namespace cv {
     };
 
     static cstr_t
+    light_vs = R"(
+        #version 330
+
+        // Input vertex attributes
+        in vec3 vertexPosition;
+        in vec2 vertexTexCoord;
+        in vec3 vertexNormal;
+        in vec4 vertexColor;
+
+        // Input uniform values
+        uniform mat4 mvp;
+        uniform mat4 matModel;
+        uniform mat4 matNormal;
+
+        // Output vertex attributes (to fragment shader)
+        out vec3 fragPosition;
+        out vec2 fragTexCoord;
+        out vec4 fragColor;
+        out vec3 fragNormal;
+
+        // NOTE: Add here your custom variables
+
+        void main()
+        {
+            // Send vertex attributes to fragment shader
+            fragPosition = vec3(matModel*vec4(vertexPosition, 1.0));
+            fragTexCoord = vertexTexCoord;
+            fragColor = vertexColor;
+            fragNormal = normalize(vec3(matNormal*vec4(vertexNormal, 1.0)));
+
+            // Calculate final vertex position
+            gl_Position = mvp*vec4(vertexPosition, 1.0);
+        }
+    )";
+
+    static cstr_t
+    light_fs = R"(
+        #version 330
+
+        // Input vertex attributes (from vertex shader)
+        in vec3 fragPosition;
+        in vec2 fragTexCoord;
+        in vec4 fragColor;
+        in vec3 fragNormal;
+
+        // Input uniform values
+        uniform sampler2D texture0;
+        uniform vec4 colDiffuse;
+
+        // Output fragment color
+        out vec4 finalColor;
+
+        // NOTE: Add here your custom variables
+
+        #define     MAX_LIGHTS              4
+        #define     LIGHT_DIRECTIONAL       0
+        #define     LIGHT_POINT             1
+
+        struct Light {
+            int enabled;
+            int type;
+            vec3 position;
+            vec3 target;
+            vec4 color;
+        };
+
+        // Input lighting values
+        uniform Light lights[MAX_LIGHTS];
+        uniform vec4 ambient;
+        uniform vec3 viewPos;
+
+        void main()
+        {
+            // Texel color fetching from texture sampler
+            vec4 texelColor = texture(texture0, fragTexCoord);
+            vec3 lightDot = vec3(0.0);
+            vec3 normal = normalize(fragNormal);
+            vec3 viewD = normalize(viewPos - fragPosition);
+            vec3 specular = vec3(0.0);
+
+            vec4 tint = colDiffuse * fragColor;
+
+            // NOTE: Implement here your fragment shader code
+
+            for (int i = 0; i < MAX_LIGHTS; i++)
+            {
+                if (lights[i].enabled == 1)
+                {
+                    vec3 light = vec3(0.0);
+
+                    if (lights[i].type == LIGHT_DIRECTIONAL)
+                    {
+                        light = -normalize(lights[i].target - lights[i].position);
+                    }
+
+                    if (lights[i].type == LIGHT_POINT)
+                    {
+                        light = normalize(lights[i].position - fragPosition);
+                    }
+
+                    float NdotL = max(dot(normal, light), 0.0);
+                    lightDot += lights[i].color.rgb*NdotL;
+
+                    float specCo = 0.0;
+                    if (NdotL > 0.0) specCo = pow(max(0.0, dot(viewD, reflect(-(light), normal))), 16.0); // 16 refers to shine
+                    specular += specCo;
+                }
+            }
+
+            finalColor = (texelColor*((tint + vec4(specular, 1.0))*vec4(lightDot, 1.0)));
+            finalColor += texelColor*(ambient/10.0)*tint;
+
+            // Gamma correction
+            finalColor = pow(finalColor, vec4(1.0/2.2));
+        }
+    )";
+
+    static cstr_t
     invert_fs = R"(
         #version 330
 
@@ -85,6 +214,8 @@ namespace cv {
             fragColor = vec4(1.0 - texColor.rgb, texColor.a);
         }
     )";
+
+
 
     void
     initialize_and_start_backend() {
@@ -112,10 +243,12 @@ namespace cv {
             raylib_flags |= rl::FLAG_VSYNC_HINT;
         }
 
+        raylib_flags |= rl::FLAG_MSAA_4X_HINT;
+
         rl::SetConfigFlags(raylib_flags);
 
         // Create a window:
-        rl::InitWindow(config->window_width, config->window_height, config->window_title.c_str());
+            rl::InitWindow(config->window_width, config->window_height, config->window_title.c_str());
         rl::InitAudioDevice();
 
         /*
@@ -155,7 +288,20 @@ namespace cv {
         rl::RenderTexture2D frame_texture = rl::LoadRenderTexture(config->window_width, config->window_height);
         rl::RenderTexture2D model_texture = rl::LoadRenderTexture(config->window_width, config->window_height);
 
-        rl::Shader shader_2d = rl::LoadShaderFromMemory(nullptr, invert_fs);
+        rl::Shader shader_2d    = rl::LoadShaderFromMemory(nullptr, invert_fs);
+        rl::Shader shader_light = rl::LoadShaderFromMemory(light_vs, light_fs);
+
+        shader_light.locs[rl::SHADER_LOC_VECTOR_VIEW] = rl::GetShaderLocation(shader_light, "viewPost");
+        shader_light.locs[rl::SHADER_LOC_MATRIX_MODEL] = rl::GetShaderLocation(shader_light, "matModel");
+        int u_ambient = rl::GetShaderLocation(shader_light, "ambient");
+
+        float u_ambient_color[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
+        rl::SetShaderValue(
+            shader_light,
+            u_ambient,
+            u_ambient_color,
+            rl::SHADER_UNIFORM_VEC4
+        );
 
         rl::Camera3D camera = { 0 };
         camera.position     = { 0.2f, 5.0f, 5.0f };
@@ -170,14 +316,14 @@ namespace cv {
         rl::Model cup = rl::LoadModel(model_path("Cup").c_str());
         cup.materials[0].maps[rl::MATERIAL_MAP_DIFFUSE].color = rl::RED;
 
-        // rl::Shader shader_3d = rl::LoadShaderFromMemory(curvature_fs, nullptr);
-        // float curvature = 0.9f;
-        // rl::SetShaderValue(
-        //     shader_3d,
-        //     rl::GetShaderLocation(shader_3d, "curvature"),
-        //     &curvature,
-        //     rl::SHADER_UNIFORM_FLOAT
-        // );
+        // Instantiate lights:
+        // constexpr int MAX_LIGHTS = 4;
+        rl::Light lights[4] = {};
+        lights[0] = rl::CreateLight(rl::LIGHT_POINT, { -2, 1, -2 }, rl::vec3_zero(), rl::YELLOW, shader_light);
+        lights[1] = rl::CreateLight(rl::LIGHT_POINT, { 2, 1, 2 }, rl::vec3_zero(), rl::RED, shader_light);
+        lights[2] = rl::CreateLight(rl::LIGHT_POINT, { -2, 1, 2 }, rl::vec3_zero(), rl::GREEN, shader_light);
+        lights[3] = rl::CreateLight(rl::LIGHT_POINT, { 2, 1, -2 }, rl::vec3_zero(), rl::BLUE, shader_light);
+
 
         // Main loop:
         const f64 S_PER_FRAME = 1.0/config->desired_framerate;
@@ -185,7 +331,7 @@ namespace cv {
 
         // Run user code to init/start the game:
         frontend_start();
-        rl::DisableCursor();
+        // rl::DisableCursor();
 
         while (context->should_run) {
             // Wait out the extra time
@@ -211,33 +357,72 @@ namespace cv {
             context->should_run = !rl::WindowShouldClose();
 
             // Render the 2D engine scene onto the frame texture:
-            rl::BeginTextureMode(frame_texture); {
-                rl::ClearBackground({0,0,0,0});
-                registry->get_system<Rect_Renderer_System>().update();
-                registry->get_system<Texture_Renderer_System>().update();
-                registry->get_system<Text_Renderer_System>().update();
-            } rl::EndTextureMode();
+            #if 0
+            {
+                rl::BeginTextureMode(frame_texture); {
+                    rl::ClearBackground({0,0,0,0});
+                    registry->get_system<Rect_Renderer_System>().update();
+                    registry->get_system<Texture_Renderer_System>().update();
+                    registry->get_system<Text_Renderer_System>().update();
+                } rl::EndTextureMode();
 
-            // Apply post-processing:
-            rl::BeginTextureMode(model_texture); {
-                rl::ClearBackground({0,0,0,50});
-                rl::BeginShaderMode(shader_2d);
-                rl::DrawTexture(frame_texture.texture, 0, 0, {255,255,255,255});
-                rl::EndShaderMode();
-            } rl::EndTextureMode();
+                // Apply post-processing:
+                rl::BeginTextureMode(model_texture); {
+                    rl::ClearBackground({0,0,0,50});
+                    rl::BeginShaderMode(shader_2d);
+                    rl::DrawTexture(frame_texture.texture, 0, 0, {255,255,255,255});
+                    rl::EndShaderMode();
+                } rl::EndTextureMode();
 
-            // Render the 3D scene:
-            rl::BeginDrawing();
-            rl::ClearBackground(context->clear_color); {
-                rl::BeginMode3D(camera);
-                // rl::BeginShaderMode(shader_3d);
-                rl::rlDisableBackfaceCulling();
-                rl::DrawModel(plane, { 0.0f, 0.0f, 0.0f }, 1.0f, rl::WHITE);
-                rl::rlEnableBackfaceCulling();
-                // rl::EndShaderMode();
-                rl::DrawModel(cup, { 1.0f, -0.2f, -2.0f }, 0.1f, rl::WHITE);
-                rl::EndMode3D();
-            } rl::EndDrawing();
+                // Render the 3D scene:
+                rl::BeginDrawing();
+                rl::ClearBackground(context->clear_color); {
+                    rl::BeginMode3D(camera);
+                    // rl::BeginShaderMode(shader_3d);
+                    rl::rlDisableBackfaceCulling();
+                    rl::DrawModel(plane, { 0.0f, 0.0f, 0.0f }, 1.0f, rl::WHITE);
+                    rl::rlEnableBackfaceCulling();
+                    // rl::EndShaderMode();
+                    rl::DrawModel(cup, { 1.0f, -0.2f, -2.0f }, 0.1f, rl::WHITE);
+                    rl::EndMode3D();
+                } rl::EndDrawing();
+            }
+            #endif
+
+            // Test light rendering:
+            {
+                using namespace rl;
+
+                // Check key inputs to enable/disable lights
+                if (IsKeyPressed(KEY_Y)) { lights[0].enabled = !lights[0].enabled; }
+                if (IsKeyPressed(KEY_R)) { lights[1].enabled = !lights[1].enabled; }
+                if (IsKeyPressed(KEY_G)) { lights[2].enabled = !lights[2].enabled; }
+                if (IsKeyPressed(KEY_B)) { lights[3].enabled = !lights[3].enabled; }
+
+                // Update light values (actually, only enable/disable them)
+                for (int i = 0; i < MAX_LIGHTS; i++) UpdateLightValues(shader_light, lights[i]);
+
+                BeginDrawing();
+                ClearBackground({0,0,0,255});
+                BeginMode3D(camera);
+                    BeginShaderMode(shader_light);
+                    DrawPlane(rl::vec3_zero(), {10.0f, 10.0f}, {255,255,255,255});
+                    DrawCube(rl::vec3_zero(), 2.0f, 4.0f, 2.0f, {255,255,255,255});
+                    EndShaderMode();
+
+                    for (int i = 0; i < MAX_LIGHTS; i++)
+                    {
+                        if (lights[i].enabled) {
+                            DrawSphereEx(lights[i].position, 0.2f, 8, 8, lights[i].color);
+                        } else {
+                            DrawSphereWires(lights[i].position, 0.2f, 8, 8, ColorAlpha(lights[i].color, 0.3f));
+                        }
+                    }
+
+                    DrawGrid(10, 1.0f);
+                EndMode3D();
+                EndDrawing();
+            }
 
             // Update window size:
             if (rl::IsWindowResized()) {
