@@ -172,7 +172,6 @@ namespace cv {
 
 		~Array() {
 			delete data;
-			log_warn("~Array");
 		}
 	};
 }

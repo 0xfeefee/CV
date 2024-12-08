@@ -87,4 +87,9 @@ namespace cv {
         return get_context<Engine_Config>()->root_dir + "assets/models/" + file_name + ".obj";
     }
 
+    std::string
+    model_path_glb(const std::string& file_name) {
+        return get_context<Engine_Config>()->root_dir + "assets/models_glb/" + file_name + ".glb";
+    }
+
 } // cv
