@@ -17,7 +17,7 @@ set(BUILD_ENABLE_LOGS       ON 		     CACHE STRING "Enable build logs")
 
 ## Create the project:
 project(${PROJECT_NAME}
-	VERSION 0.7.0
+	VERSION 0.8.0
 	LANGUAGES C CXX
 )
 

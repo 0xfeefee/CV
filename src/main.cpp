@@ -35,8 +35,8 @@ using namespace cv;
         Engine_Config config;
         config.desired_framerate = 144;
         config.root_dir          = user_root_dir;
-        config.window_width      = 1920;
-        config.window_height     = 1080;
+        config.window_width      = 1280;
+        config.window_height     = 720;
         // config.flags             = Engine_Flags_No_Decoration;
 
         initialize_and_start(config);

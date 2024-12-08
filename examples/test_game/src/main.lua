@@ -36,8 +36,8 @@ function game_begin()
 	local something = create_entity({
 		x= 256,
 		y= 256,
-		width= test.rect.width*2,
-		height= test.rect.height*2,
+		width= test.rect.width*4,
+		height= test.rect.height*4,
 		texture_id= test.id
 	});
 

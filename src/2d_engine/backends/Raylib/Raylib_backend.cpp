@@ -60,7 +60,7 @@ namespace cv {
     */
 
     // @todo: replace this...
-    constexpr int MAX_TEXTURE_COUNT = 8;
+    constexpr int MAX_TEXTURE_COUNT = 16;
     constexpr int MAX_SOUND_COUNT   = 16;
     constexpr int MAX_FONT_COUNT    = 16;
 
@@ -166,6 +166,11 @@ namespace cv {
 
             When updating the camera we use the { FREE_CAMERA } mode which allows us to move it with
             { W, A, S, D }
+
+            Throwaway code!
+
+            At the moment I'm just figuring out what sort of data type we will use for model loading, or how
+            these will be rendered, while composing the final scene in Blender.
         */
         rl::RenderTexture2D frame_texture = rl::LoadRenderTexture(config->window_width, config->window_height);
         rl::RenderTexture2D model_texture = rl::LoadRenderTexture(config->window_width, config->window_height);
@@ -179,13 +184,21 @@ namespace cv {
         camera.fovy         = 45.0f;
         camera.projection   = rl::CAMERA_PERSPECTIVE;
 
-        rl::Model plane = rl::LoadModelFromMesh(rl::GenMeshPlane(20.0f, 20.0f, 1, 1));
+        rl::Model plane = rl::LoadModelFromMesh(rl::GenMeshPlane(8.0f, 6.0f, 1, 1));
         plane.materials[0].maps[rl::MATERIAL_MAP_DIFFUSE].texture = model_texture.texture;
 
-        rl::Model cup = rl::LoadModel(model_path_glb("donut-sprinkles").c_str());
+        rl::Model donut = rl::LoadModel(model_path_glb("donut-sprinkles").c_str());
         rl::Texture2D colormap = rl::LoadTexture(image_path("colormap").c_str());
-        for (int i = 0; i < cup.materialCount; i++) {
-            rl::SetMaterialTexture(&cup.materials[i], rl::MATERIAL_MAP_DIFFUSE, colormap);
+
+        for (int i = 0; i < donut.materialCount; i++) {
+            rl::SetMaterialTexture(&donut.materials[i], rl::MATERIAL_MAP_DIFFUSE, colormap);
+        }
+
+        rl::Model crt_monitor = rl::LoadModel(model_path_glb("crt2").c_str());
+        rl::Texture2D crt_colormap = rl::LoadTexture(image_path("crt_UV").c_str());
+
+        for (int i = 0; i < crt_monitor.materialCount; i++) {
+            rl::SetMaterialTexture(&crt_monitor.materials[i], rl::MATERIAL_MAP_DIFFUSE, crt_colormap);
         }
 
         // Main loop:
@@ -194,7 +207,9 @@ namespace cv {
 
         // Run user code to init/start the game:
         frontend_start();
-        // rl::DisableCursor();
+        rl::DisableCursor();
+
+        float x = 0.0f, y = 0.0f, z = 0.0f;
 
         while (context->should_run) {
             // Wait out the extra time
@@ -212,6 +227,13 @@ namespace cv {
             registry->update();
             frontend_step(delta_s);
             registry->get_system<Basic_Velocity_System>().update(delta_s);
+
+            if (rl::IsKeyPressed(rl::KEY_SPACE)) {
+                x += 0.1f;
+            }
+            if (rl::IsKeyPressed(rl::KEY_LEFT_SHIFT)) {
+                y += 0.1f;
+            }
 
             // Update the 3D camera:
             rl::UpdateCamera(&camera, rl::CAMERA_FREE);
@@ -238,12 +260,13 @@ namespace cv {
 
                 // Render the 3D scene:
                 rl::BeginDrawing();
-                rl::ClearBackground(context->clear_color); {
+                rl::ClearBackground({0,0,0,255}); {
                     rl::BeginMode3D(camera);
                     rl::rlDisableBackfaceCulling();
-                    rl::DrawModel(plane, { 0.0f, 0.0f, 0.0f }, 1.0f, rl::WHITE);
+                    rl::DrawModel(plane, { 0.0f, 3.0f, 0.0f }, 1.25f, rl::WHITE);
                     rl::rlEnableBackfaceCulling();
-                    rl::DrawModel(cup, { 1.0f, -0.2f, -2.0f }, 5.0f, rl::WHITE);
+                    rl::DrawModel(donut, { 0.0f, 4.0f, 5.0f }, 5.0f, rl::WHITE);
+                    rl::DrawModel(crt_monitor, { 0.0f, 0.0f, 8.0f }, 0.25f, rl::WHITE);
                     rl::EndMode3D();
                 } rl::EndDrawing();
             }

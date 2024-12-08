@@ -28,8 +28,8 @@ building in that direction.
 
 - [ ] Render the game within a 3D scene.
 	* [X] Render the output of 2d engine to an offscreen texture.
-	* [ ] Add support for loading .obj models (or .dae for entire scene at once?)
-	* [ ] Model the scene in blender.
+	* [X] Add support for loading .obj models (or .dae for entire scene at once?)
+	* [ ] Model the scene in blender. (currently in progress).
 	* [X] Add post-processing support.
 	* [ ] Add simple the CRT shader for the virtual screen.
 	* [ ] Render & test.

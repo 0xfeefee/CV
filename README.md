@@ -1,9 +1,9 @@
-# CV (v0.7.0)
+# CV (v0.8.0)
 This is just a basic demo of programming skills, not a real product. It will be continually
 updated until I'm done with search.
 
 ## Status
-- In progress
+- In progress (Currently modeling/composing the 3D scene in Blender...)
 	* see: [TODO/](./docs/TODO.md) for a rough roadmap.
 	* see: [Time/](./docs/Time.md) for time tracking.
 
@@ -65,3 +65,5 @@ Rendering the 2D engine scene onto a plane in 3D space.
 ![Rendering 2D game onto a plane in 3D space - v.0.6.0](https://github.com/0xfeefee/CV/blob/main/docs/screenshots/v0.6.0.PNG)
 Applying post-processing to the 2D engine scene + loading `.obj` models.
 ![Applying post-processing and loading OBJ models](https://github.com/0xfeefee/CV/blob/main/docs/screenshots/v0.7.0.PNG)
+Testing out some basic 3D rendering styles and composition to see how it compares to the Blender Scene.
+![Testing out some basic 3D rendering styles and composition to see how it compares to the Blender scene](https://github.com/0xfeefee/CV/blob/main/docs/screenshots/v0.8.0.PNG)
