@@ -51,3 +51,5 @@
 ## v0.7.0
 - 2024-12-04: Added a way to apply post-processing to the 2D game scene.
 - 2024-12-05: Load an `{ .OBJ }` model.
+- 2024-12-06: Experimented with lights (stash), added `{ rlights }` for potential future use.
+- 2024-12-08: Loading models from `{ .glb }`, experimenting with scene composition.

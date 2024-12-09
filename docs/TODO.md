@@ -26,6 +26,7 @@ Alpha is a rough draft of the 2D engine and structure of the program, Beta has t
 it and define the edges. Here we figure out the exact scope of the application and focus on
 building in that direction.
 
+- [ ] Small restructure to better accommodate the 3D features.
 - [ ] Render the game within a 3D scene.
 	* [X] Render the output of 2d engine to an offscreen texture.
 	* [X] Add support for loading .obj models (or .dae for entire scene at once?)
