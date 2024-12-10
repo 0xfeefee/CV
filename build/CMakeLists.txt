@@ -200,8 +200,10 @@ list(APPEND VENDOR_INCLUDE_DIRS
 set(SOURCE_FILES
 	${SRC}/main.cpp
 	${SRC}/base.pch.cpp
-	${SRC}/ecs/ecs.cpp
-	${SRC}/ecs/Component_Mask.cpp
+	${SRC}/ecs/Entity.cpp
+	${SRC}/ecs/Component.cpp
+	${SRC}/ecs/System.cpp
+	${SRC}/ecs/Registry.cpp
 	${SRC}/2d_engine/2d_engine.cpp
 )
 

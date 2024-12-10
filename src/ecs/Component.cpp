@@ -1,6 +1,6 @@
 
-// Implement:
-#include <ecs/Component_Mask.hpp>
+// Implements:
+#include <ecs/Component.hpp>
 
 namespace jbx {
 
