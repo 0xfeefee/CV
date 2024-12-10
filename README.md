@@ -1,6 +1,5 @@
-# CV (v0.8.0)
-This is just a basic demo of programming skills, not a real product. It will be continually
-updated until I'm done with search.
+# JunkBox_2007 (v0.8.0)
+This is just a basic demo of programming skills, not a real product and it's work in progress.
 
 ## Status
 - In progress (Currently modeling/composing the 3D scene in Blender...)
@@ -8,11 +7,14 @@ updated until I'm done with search.
 	* see: [Time/](./docs/Time.md) for time tracking.
 
 ## Idea (subject to change)
+Emulate my experience making games on the home computer with GameMaker 6.
+
 - A tiny 2D game engine.
-- Backend agnostic.
+- Backend agnostic (Raylib, DirectX, Sokol...)
 - Very limited, like Pico-8.
-- Scripting with Lua or something else (agnostic?).
-- Game runs on a virtual screen in 3D space (Inscryption vibes).
+- Scripting agnostic (Lua, Wren, C#, Python, ...)
+- Game runs on a virtual screen in 3D space.
+- Game may affect the 3D space through a fixed set of commands?
 
 ## Project structure & setup
 - [bin/](./bin): build output directory.
@@ -61,9 +63,9 @@ tagged for "Linux64" and "Windows64", to enable cross platform builds.
 ### Screenshots
 First working iteration of the sprite renderer:
 ![First working iteration of sprite rendering - v.0.5.0](https://github.com/0xfeefee/CV/blob/main/docs/screenshots/v0.5.0.PNG)
-Rendering the 2D engine scene onto a plane in 3D space.
+Rendering the 2D engine scene onto a plane in 3D space:
 ![Rendering 2D game onto a plane in 3D space - v.0.6.0](https://github.com/0xfeefee/CV/blob/main/docs/screenshots/v0.6.0.PNG)
-Applying post-processing to the 2D engine scene + loading `.obj` models.
+Applying post-processing to the 2D engine scene + loading `.obj` models:
 ![Applying post-processing and loading OBJ models](https://github.com/0xfeefee/CV/blob/main/docs/screenshots/v0.7.0.PNG)
-Testing out some basic 3D rendering styles and composition to see how it compares to the Blender Scene.
+Basic 3D scene composition:
 ![Testing out some basic 3D rendering styles and composition to see how it compares to the Blender scene](https://github.com/0xfeefee/CV/blob/main/docs/screenshots/v0.8.0.PNG)
