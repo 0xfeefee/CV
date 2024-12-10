@@ -201,6 +201,7 @@ set(SOURCE_FILES
 	${SRC}/main.cpp
 	${SRC}/base.pch.cpp
 	${SRC}/ecs/ecs.cpp
+	${SRC}/ecs/Component_Mask.cpp
 	${SRC}/2d_engine/2d_engine.cpp
 )
 

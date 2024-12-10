@@ -5,26 +5,6 @@
 namespace jbx {
 
     /*
-    ## Component_Mask: implementation
-    */
-
-    const u8
-    Component_Mask::get_value() const {
-        return value;
-    }
-
-    void
-    Component_Mask::reset() {
-        value = 0;
-    }
-
-    bool
-    Component_Mask::contains(const Component_Mask& other) const {
-        return (value & other.value) == other.value;
-    }
-
-
-    /*
     ## Entity: implementation
     */
 

@@ -52,4 +52,28 @@ namespace jbx {
         contains(const Component_Mask& other) const;
     };
 
+    /*
+    ## Component_Mask: template definitions
+    */
+
+    template <typename T>
+    bool Component_Mask::has() const {
+        int component_type_id = Component<T>::get_type_id();
+        return (value & (1 << component_type_id)) != 0;
+    }
+
+    template <typename T>
+    void
+    Component_Mask::add() {
+        int component_type_id = Component<T>::get_type_id();
+        value |= (1 << component_type_id);
+    }
+
+    template <typename T>
+    void
+    Component_Mask::remove() {
+        int component_type_id = Component<T>::get_type_id();
+        value &= ~(1 << component_type_id);
+    }
+
 } // jbx
