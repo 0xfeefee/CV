@@ -2,7 +2,7 @@
 /*
     Every frontend must implement the following hooks.
 */
-namespace cv {
+namespace jbx {
 
     /*
         Setup the virtual machine for a given backend and run the user code to initialize their game.
@@ -23,4 +23,4 @@ namespace cv {
     void
     frontend_stop();
 
-}
+} // jbx

@@ -53,3 +53,6 @@
 - 2024-12-05: Load an `{ .OBJ }` model.
 - 2024-12-06: Experimented with lights (stash), added `{ rlights }` for potential future use.
 - 2024-12-08: Loading models from `{ .glb }`, experimenting with scene composition.
+
+## v0.8.0
+- 2024-12-10: Restructured the project and refactored the core: ecs, engine core.

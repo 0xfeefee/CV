@@ -5,7 +5,7 @@
 // Dependencies:
 #include <2d_engine/2d_engine.hpp>
 #include <2d_engine/2d_engine_api.hpp>
-#include <2d_engine/ecs.hpp>
+#include <ecs/ecs.hpp>
 
 // Dependencies (3rd_party):
 #define SOL_NO_EXCEPTIONS 1
@@ -14,7 +14,7 @@
 @todo: Factor this out so it's less messy, separate the bindings from the core.
 @todo: Make the user experience better, now it feels a bit janky....
 */
-namespace cv {
+namespace jbx {
 
     struct Script_Context {
         sol::function begin;
@@ -370,4 +370,4 @@ namespace cv {
         context->end();
     }
 
-}
+} // jbx

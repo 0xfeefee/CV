@@ -1,6 +1,5 @@
 
 // Implements:
-#include "base.pch.hpp"
 #include <2d_engine/backend_hook.hpp>
 
 // Dependencies:
@@ -15,7 +14,7 @@
 /*
     On hold until Raylib backend is fully implemented: now implementing 3D scene features.
 */
-namespace cv {
+namespace jbx {
 
     // DirectX backend context
     struct Engine_Context {
@@ -235,4 +234,5 @@ namespace cv {
     draw_text(const Text& text, f32x2 position) {
         log_warn("{ draw_text } not implemented!");
     }
-}
+
+} // jbx

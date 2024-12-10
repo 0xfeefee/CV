@@ -5,8 +5,7 @@
     We only support { PNG } images in order to make things as simple as possible, technically there's no reason
     to not support other formats, but it's good to set hard limitations.
 */
-#include <string>
-namespace cv {
+namespace jbx {
 
     struct s32x2 {
         s32 x;
@@ -168,4 +167,4 @@ namespace cv {
     std::string
     model_path_glb(const std::string& file_name);
 
-} // cv
+} // jbx

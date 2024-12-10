@@ -1,4 +1,4 @@
-# JunkBox_2007 (v0.8.0)
+# JunkBox_2007 (v0.9.0)
 This is just a basic demo of programming skills, not a real product and it's work in progress.
 
 ## Status

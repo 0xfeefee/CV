@@ -3,8 +3,7 @@
 #include <chrono>
 #include <ratio>
 
-namespace cv {
-
+namespace jbx {
 	/*
 		Check if all the fixed-size integer aliases are of correct size.
 	*/
@@ -33,7 +32,7 @@ namespace cv {
 	#include <spdlog/sinks/stdout_color_sinks.h>
 	#include <spdlog/sinks/rotating_file_sink.h>
 
-	namespace cv {
+	namespace jbx {
 
 		/*
 			Generates the log output file name for the current day formatted in ISO 8601 format: { YYYY-MM-DD },

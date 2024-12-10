@@ -2,14 +2,14 @@
 #pragma once
 
 // Implements:
-#include <2d_engine/ecs.hpp>
+#include <ecs/ecs.hpp>
 
 // Dependencies:
 #include <2d_engine/2d_engine_api.hpp>
 /*
     @todo: the painters algorithm needs z-sorting...
 */
-namespace cv {
+namespace jbx {
 
     /*
         Modifies entity position based on the current velocity...
@@ -98,4 +98,4 @@ namespace cv {
         }
     };
 
-}
+} // jbx

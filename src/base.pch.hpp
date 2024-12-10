@@ -40,15 +40,15 @@ using Shared = std::shared_ptr<T>;
 	- { WARN_IF } raises a warning when the condition is fulfilled.
 */
 #if PROJECT_ENABLE_LOGS
-	#define EXPECT(condition, ...)   if (!(condition)) cv::terminate(__FILE__, __LINE__, #condition, __VA_ARGS__)
-	#define ERROR_IF(condition, ...) if ((condition))  cv::terminate(__FILE__, __LINE__, #condition, __VA_ARGS__)
+	#define EXPECT(condition, ...)   if (!(condition)) jbx::terminate(__FILE__, __LINE__, #condition, __VA_ARGS__)
+	#define ERROR_IF(condition, ...) if ((condition))  jbx::terminate(__FILE__, __LINE__, #condition, __VA_ARGS__)
 #else
 	#define EXPECT(condition, ...)
 	#define ERROR_IF(condition, ...)
 #endif
 
 
-namespace cv {
+namespace jbx {
 
 	/*
 	## Fixed-size integer types
@@ -192,7 +192,7 @@ namespace cv {
 	#include <utility> 		  // forward
 	#include <spdlog/async.h> // async_logger
 
-	namespace cv {
+	namespace jbx {
 		/*
 			Log_Context is used for internal logger state, it's only here because we have decided to prioritize
 			the ease of use of { log, log_warn, log_error } functions. But there's no need to ever use this
@@ -238,7 +238,7 @@ namespace cv {
 	/*
 		Logger functions expand to no-op when logger is disabled.
 	*/
-	namespace cv {
+	namespace jbx {
 
 		template <typename ...Args>
 		inline void

@@ -1,7 +1,7 @@
 
 // Dependencies:
 #include <2d_engine/2d_engine.hpp>
-using namespace cv;
+using namespace jbx;
 
 /*
     For DirectX we use WinMain entry point, other backends use a good old main.

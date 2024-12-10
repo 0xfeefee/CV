@@ -17,7 +17,7 @@ set(BUILD_ENABLE_LOGS       ON 		     CACHE STRING "Enable build logs")
 
 ## Create the project:
 project(${PROJECT_NAME}
-	VERSION 0.8.0
+	VERSION 0.9.0
 	LANGUAGES C CXX
 )
 
@@ -200,8 +200,8 @@ list(APPEND VENDOR_INCLUDE_DIRS
 set(SOURCE_FILES
 	${SRC}/main.cpp
 	${SRC}/base.pch.cpp
+	${SRC}/ecs/ecs.cpp
 	${SRC}/2d_engine/2d_engine.cpp
-	${SRC}/2d_engine/ecs.cpp
 )
 
 ## Add the current backend and frontend files:

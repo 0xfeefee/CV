@@ -3,17 +3,16 @@
 #include <2d_engine/2d_engine.hpp>
 
 // Dependencies:
-#include <2d_engine/ecs.hpp>
+#include <ecs/ecs.hpp>
 #include <2d_engine/features/systems.hpp>
 #include <2d_engine/backend_hook.hpp>
 #include <2d_engine/2d_engine_api.hpp>
 
 // Dependencies (3rd party):
 #include <filesystem>
-#include <string>
 
 
-namespace cv {
+namespace jbx {
 
     /*
         Validate the configuration, if invalid fall back to reasonable defaults.
@@ -92,4 +91,4 @@ namespace cv {
         return get_context<Engine_Config>()->root_dir + "assets/models_glb/" + file_name + ".glb";
     }
 
-} // cv
+} // jbx

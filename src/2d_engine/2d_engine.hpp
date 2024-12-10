@@ -1,6 +1,6 @@
 #pragma once
 
-namespace cv {
+namespace jbx {
 
     /*
         Flags used to configure the platform windows
@@ -45,5 +45,5 @@ namespace cv {
     void
     initialize_and_start(Engine_Config config);
 
-} // cv
+} // jbx
 

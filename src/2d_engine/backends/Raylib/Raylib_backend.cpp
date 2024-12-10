@@ -1,6 +1,5 @@
 
 // Implements:
-#include "base.pch.hpp"
 #include <2d_engine/backend_hook.hpp>
 
 // Dependencies:
@@ -35,21 +34,21 @@ namespace rl {
     */
 
     static inline rl::Rectangle
-    to_rectangle(const cv::Rect rect) {
+    to_rectangle(const jbx::Rect rect) {
         return { rect.x, rect.y, rect.z, rect.w };
     }
 
     static inline rl::Color
-    to_color(const cv::Color& color) {
+    to_color(const jbx::Color& color) {
         return { color.x, color.y, color.z, color.w };
     }
 
     Vector3 vec3_zero(void) {
         return { 0.0f, 0.0f, 0.0f };
     }
-}
+} // rl
 
-namespace cv {
+namespace jbx {
 
     /*
         Raylib backend context.
@@ -408,4 +407,4 @@ namespace cv {
         );
     }
 
-} // cv
+} // jbx
