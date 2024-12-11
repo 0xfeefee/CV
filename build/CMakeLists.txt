@@ -202,11 +202,17 @@ set(SOURCE_FILES
 	${SRC}/main.cpp
 	${SRC}/base.pch.cpp
 
-	# ECS
+	# ECS:
 	${SRC}/ecs/Entity.cpp
 	${SRC}/ecs/Component.cpp
 	${SRC}/ecs/Base_System.cpp
 	${SRC}/ecs/Registry.cpp
+
+	# Features:
+	${SRC}/features/Basic_Velocity_System.cpp
+	${SRC}/features/Rect_Renderer_System.cpp
+	${SRC}/features/Text_Renderer_System.cpp
+	${SRC}/features/Texture_Renderer_System.cpp
 
 	# Engine
 	${SRC}/2d_engine/2d_engine.cpp

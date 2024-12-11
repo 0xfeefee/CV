@@ -5,23 +5,16 @@
 
 namespace jbx {
 
+    /*
+        Draw text of the given font, color and position.
+    */
     class Text_Renderer_System final : public Base_System {
     public:
-        Text_Renderer_System() {
-            component_mask.add<Text>();
-            component_mask.add<Rect>();
-        }
+        Text_Renderer_System();
+        ~Text_Renderer_System() = default;
 
         void
-        update(f64 dt) override {
-            Unique<Registry>& registry = get_context<Registry>();
-            for (auto& entity: entities) {
-                Rect& rect = registry->get_component<Rect>(entity);
-                Text& text = registry->get_component<Text>(entity);
-
-                draw_text(text, {rect.x, rect.y});
-            }
-        }
+        update(f64 dt) override;
     };
 
 } // jbx

@@ -10,21 +10,11 @@ namespace jbx {
     */
     class Texture_Renderer_System final : public Base_System {
     public:
-        Texture_Renderer_System() {
-            component_mask.add<Rect>();
-            component_mask.add<Texture>();
-        }
+        Texture_Renderer_System();
+        ~Texture_Renderer_System() = default;
 
         void
-        update(f64 delta_time) override {
-            Unique<Registry>& registry = get_context<Registry>();
-            for (auto& entity: entities) {
-                Rect& rect       = registry->get_component<Rect>(entity);
-                Texture& texture = registry->get_component<Texture>(entity);
-
-                draw_texture(texture, rect);
-            }
-        }
+        update(f64 delta_time) override;
     };
 
 } // jbx
