@@ -55,4 +55,6 @@
 - 2024-12-08: Loading models from `{ .glb }`, experimenting with scene composition.
 
 ## v0.8.0
-- 2024-12-10: Restructured the project and refactored the core: ecs, engine core.
+- 2024-12-10: Restructured the project and refactored the core: ecs, engine core. Renamed the
+  project from `CV` to `JunkBox_2007`.
+- 2024-12-11:

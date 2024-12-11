@@ -7,10 +7,11 @@
 namespace jbx {
 
    /*
-       A system simply keeps a collection of all the entities which meet the component requirements.
+       A system simply keeps a collection of all the entities which meet the component
+       requirements.
 
-       { Base_System } is purposefully open-ended to enable systems to be used in different ways or different
-       parts of the life-cycle.
+       { Base_System } is purposefully open-ended to enable systems to be used in different ways
+       or different parts of the life-cycle.
    */
    class Base_System {
    protected:
@@ -18,8 +19,8 @@ namespace jbx {
        std::vector<Entity>  entities;
 
    public:
-       Base_System()  = default;
-       ~Base_System() = default;
+       Base_System()          = default;
+       virtual ~Base_System() = default;
 
        void
        add_entity(Entity entity);
@@ -29,6 +30,9 @@ namespace jbx {
 
        const Component_Mask&
        get_component_mask() const;
+
+       virtual void
+       update(f64 delta_time) = 0;
    };
 
 } // jbx

@@ -20,7 +20,7 @@ namespace jbx {
         data. @todo: Simplify, reduce access time.
     */
     template <typename T>
-    class Pool: public Base_Pool {
+    class Pool final: public Base_Pool {
     private:
         std::vector<T> data;
         int            size;

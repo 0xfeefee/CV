@@ -198,12 +198,17 @@ list(APPEND VENDOR_INCLUDE_DIRS
 ##
 ## Create an executable:
 set(SOURCE_FILES
+	# Entry point & pch:
 	${SRC}/main.cpp
 	${SRC}/base.pch.cpp
+
+	# ECS
 	${SRC}/ecs/Entity.cpp
 	${SRC}/ecs/Component.cpp
-	${SRC}/ecs/System.cpp
+	${SRC}/ecs/Base_System.cpp
 	${SRC}/ecs/Registry.cpp
+
+	# Engine
 	${SRC}/2d_engine/2d_engine.cpp
 )
 

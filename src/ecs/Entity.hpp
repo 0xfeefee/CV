@@ -6,7 +6,7 @@ namespace jbx {
     /*
         Entity is just an id.
     */
-    struct Entity {
+    struct Entity final {
         int id;
 
         Entity(int id): id(id) {}

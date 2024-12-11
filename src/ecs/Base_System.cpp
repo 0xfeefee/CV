@@ -1,6 +1,6 @@
 
 // Implements:
-#include <ecs/System.hpp>
+#include <ecs/Base_System.hpp>
 
 namespace jbx {
 

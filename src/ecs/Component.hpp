@@ -10,7 +10,7 @@ namespace jbx {
         at once. In order to increase the number of component types we can handle, simply change
         the type of the value to that of a different size.
     */
-    class Component_Mask {
+    class Component_Mask final {
     private:
         u8 value = 0;
 
@@ -93,7 +93,7 @@ namespace jbx {
     };
 
     template <typename T>
-    class Component: public Base_Component {
+    class Component final : public Base_Component {
     public:
         /*
             This determines which bit in the { Component_Mask } is used represent the presence of this specific

@@ -6,7 +6,7 @@
 #include <2d_engine/2d_engine.hpp>
 #include <2d_engine/2d_engine_api.hpp>
 #include <2d_engine/frontend_hook.hpp>
-#include <2d_engine/features/systems.hpp>
+#include <features/features.hpp>
 
 // Dependencies (3rd_party):
 // Workaround the Raylib name clashes with { windows.h }, does not work with Clang!
@@ -244,9 +244,9 @@ namespace jbx {
             {
                 rl::BeginTextureMode(frame_texture); {
                     rl::ClearBackground({0,0,0,0});
-                    registry->get_system<Rect_Renderer_System>().update();
-                    registry->get_system<Texture_Renderer_System>().update();
-                    registry->get_system<Text_Renderer_System>().update();
+                    registry->get_system<Rect_Renderer_System>().update(delta_s);
+                    registry->get_system<Texture_Renderer_System>().update(delta_s);
+                    registry->get_system<Text_Renderer_System>().update(delta_s);
                 } rl::EndTextureMode();
 
                 // Apply post-processing:

@@ -3,7 +3,7 @@
 
 #include <ecs/Entity.hpp>
 #include <ecs/Component.hpp>
-#include <ecs/System.hpp>
+#include <ecs/Base_System.hpp>
 #include <ecs/Pool.hpp>
 
 namespace jbx {
@@ -23,7 +23,7 @@ namespace jbx {
 
         @todo: profile to see if it actually matters ...
     */
-    class Registry {
+    class Registry final {
     private:
         int num_entities = 0;
 
