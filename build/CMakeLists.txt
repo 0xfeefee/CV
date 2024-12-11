@@ -75,7 +75,7 @@ endif()
 ## C++ compiler configuration:
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 	set(CMAKE_CXX_COMPILER 		"cl")
-	set(CMAKE_CXX_FLAGS_DEBUG 	"/Od /WX /EHs")
+	set(CMAKE_CXX_FLAGS_DEBUG 	"/Od /WX /EHs /we4013")
 	set(CMAKE_CXX_FLAGS_RELEASE "/O3 /EHs")
 	set(CMAKE_C_COMPILER        "cl")
 elseif (CMAKE_CXX_COMPILER STREQUAL "GCC")
@@ -95,7 +95,7 @@ set(SRC 	 	   		   "${CMAKE_CURRENT_SOURCE_DIR}/../src")
 set(VENDOR	   			   "${CMAKE_CURRENT_SOURCE_DIR}/../vendor")
 set(BUILD_EXECUTABLE_NAME  "${PROJECT_NAME}")
 
-## Build type:
+## Build :
 if (BUILD_TYPE STREQUAL "Release")
 	set(BUILD_TYPE__RELEASE ON)
 	add_compile_definitions(PROJECT_BUILD_RELEASE=1)

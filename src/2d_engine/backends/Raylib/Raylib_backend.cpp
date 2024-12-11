@@ -1,12 +1,12 @@
 
 // Implements:
-#include <2d_engine/backend_hook.hpp>
+#include <engine/core/backend_hook.hpp>
 
 // Dependencies:
 #include <2d_engine/2d_engine.hpp>
 #include <2d_engine/2d_engine_api.hpp>
-#include <2d_engine/frontend_hook.hpp>
 #include <features/features.hpp>
+#include <engine/core/frontend_hook.hpp>
 
 // Dependencies (3rd_party):
 // Workaround the Raylib name clashes with { windows.h }, does not work with Clang!

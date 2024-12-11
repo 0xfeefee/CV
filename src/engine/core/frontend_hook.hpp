@@ -23,4 +23,7 @@ namespace jbx {
     void
     frontend_stop();
 
+    void
+    tester();
+
 } // jbx

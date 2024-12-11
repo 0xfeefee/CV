@@ -1,6 +1,6 @@
 
 // Implements:
-#include <2d_engine/frontend_hook.hpp>
+#include <engine/core/frontend_hook.hpp>
 
 // Dependencies:
 #include <2d_engine/2d_engine.hpp>
