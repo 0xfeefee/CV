@@ -1,12 +1,11 @@
 
 // Implements:
-#include <2d_engine/2d_engine.hpp>
-#include <engine/core/backend_hook.hpp>
+#include <engine/core/engine.hpp>
 
 // Dependencies:
+#include <engine/core/backend_hook.hpp>
 #include <ecs/ecs.hpp>
 #include <features/features.hpp>
-#include <2d_engine/2d_engine_api.hpp>
 
 // Dependencies (3rd party):
 #include <filesystem>
@@ -55,8 +54,8 @@ namespace jbx {
             Add every system to registry.
         */
         Unique<Registry>& registry = get_context<Registry>();
-        registry->add_system<Rect_Renderer_System>();
         registry->add_system<Basic_Velocity_System>();
+        registry->add_system<Rect_Renderer_System>();
         registry->add_system<Texture_Renderer_System>();
         registry->add_system<Text_Renderer_System>();
 

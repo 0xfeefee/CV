@@ -2,6 +2,9 @@
 // Implements:
 #include <features/Text_Renderer_System.hpp>
 
+// Dependencies:
+#include <engine/core/engine.hpp>
+
 namespace jbx {
 
     Text_Renderer_System::Text_Renderer_System() {

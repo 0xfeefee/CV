@@ -1,6 +1,7 @@
 
 // Dependencies:
-#include <2d_engine/2d_engine.hpp>
+#include <engine/core/engine.hpp>
+
 using namespace jbx;
 
 /*

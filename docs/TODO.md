@@ -27,6 +27,9 @@ it and define the edges. Here we figure out the exact scope of the application a
 building in that direction.
 
 - [ ] Small restructure to better accommodate the 3D features.
+	* [X] Split the ECS.
+	* [X] Split the system.
+	* [ ] Split the core (not completely, save some refactoring for the future).
 - [ ] Render the game within a 3D scene.
 	* [X] Render the output of 2d engine to an offscreen texture.
 	* [X] Add support for loading .obj models (or .dae for entire scene at once?)

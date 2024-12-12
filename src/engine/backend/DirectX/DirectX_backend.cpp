@@ -3,8 +3,7 @@
 #include <engine/core/backend_hook.hpp>
 
 // Dependencies:
-#include <2d_engine/2d_engine.hpp>
-#include <2d_engine/2d_engine_api.hpp>
+#include <engine/core/engine.hpp>
 
 // Dependencies (3rd_party):
 #include <windows.h>

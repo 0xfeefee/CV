@@ -215,12 +215,12 @@ set(SOURCE_FILES
 	${SRC}/features/Texture_Renderer_System.cpp
 
 	# Engine
-	${SRC}/2d_engine/2d_engine.cpp
+	${SRC}/engine/core/engine.cpp
 )
 
 ## Add the current backend and frontend files:
-file(GLOB_RECURSE _PROJECT_BACKEND_FILES "${SRC}/2d_engine/backends/${PROJECT_ENGINE_BACKEND}/*.cpp")
-file(GLOB_RECURSE _PROJECT_FRONTEND_FILES "${SRC}/2d_engine/frontends/${PROJECT_ENGINE_FRONTEND}/*.cpp")
+file(GLOB_RECURSE _PROJECT_BACKEND_FILES "${SRC}/engine/backend/${PROJECT_ENGINE_BACKEND}/*.cpp")
+file(GLOB_RECURSE _PROJECT_FRONTEND_FILES "${SRC}/engine/frontend/${PROJECT_ENGINE_FRONTEND}/*.cpp")
 
 list(APPEND SOURCE_FILES ${_PROJECT_BACKEND_FILES} ${_PROJECT_FRONTEND_FILES})
 

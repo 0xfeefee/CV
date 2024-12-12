@@ -2,6 +2,9 @@
 // Implements:
 #include <features/Basic_Velocity_System.hpp>
 
+// Dependencies:
+#include <engine/core/engine.hpp>
+
 namespace jbx {
 
     Basic_Velocity_System::Basic_Velocity_System() {

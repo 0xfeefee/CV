@@ -1,6 +1,6 @@
 
 #pragma once
-#include <ecs/Base_System.hpp>
+#include <ecs/ecs.hpp>
 
 namespace jbx {
 

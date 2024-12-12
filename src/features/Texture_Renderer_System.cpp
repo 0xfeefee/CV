@@ -2,6 +2,9 @@
 // Implements:
 #include <features/Texture_Renderer_System.hpp>
 
+// Dependencies:
+#include <engine/core/engine.hpp>
+
 namespace jbx {
 
     Texture_Renderer_System::Texture_Renderer_System() {

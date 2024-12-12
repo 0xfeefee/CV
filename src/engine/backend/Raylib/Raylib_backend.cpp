@@ -3,10 +3,9 @@
 #include <engine/core/backend_hook.hpp>
 
 // Dependencies:
-#include <2d_engine/2d_engine.hpp>
-#include <2d_engine/2d_engine_api.hpp>
-#include <features/features.hpp>
+#include <engine/core/engine.hpp>
 #include <engine/core/frontend_hook.hpp>
+#include <features/features.hpp>
 
 // Dependencies (3rd_party):
 // Workaround the Raylib name clashes with { windows.h }, does not work with Clang!
@@ -17,15 +16,9 @@ namespace rl {
         #undef DrawTextEx
     #endif
 
-    // #define RAYMATH_IMPLEMENTATION
-
+    #define GLSL_VERSION 330
     #include <raylib.h>
     #include <rlgl.h>
-
-    #define RLIGHTS_IMPLEMENTATION
-    #include <2d_engine/backends/Raylib/rlights.h>
-
-    #define GLSL_VERSION 330
 
     /*
     ## Helpers

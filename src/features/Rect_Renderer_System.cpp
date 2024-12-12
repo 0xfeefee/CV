@@ -3,8 +3,7 @@
 #include <features/Rect_Renderer_System.hpp>
 
 // Dependencies:
-#include <ecs/ecs.hpp>
-#include <2d_engine/2d_engine_api.hpp>
+#include <engine/core/engine.hpp>
 
 namespace jbx {
 

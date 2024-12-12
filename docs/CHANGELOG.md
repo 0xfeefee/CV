@@ -56,5 +56,6 @@
 
 ## v0.8.0
 - 2024-12-10: Restructured the project and refactored the core: ecs, engine core. Renamed the
-  project from `CV` to `JunkBox_2007`.
-- 2024-12-11:
+  project from `CV` to `JunkBox_2007`. Refactoring continues.
+- 2024-12-12: First pass of the refactoring is now done, systems are split, ecs is split, core is better defined, but we will need to revisit it once everything works well enough first!
+
