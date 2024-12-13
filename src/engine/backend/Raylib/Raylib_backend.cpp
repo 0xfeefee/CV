@@ -14,6 +14,7 @@ namespace rl {
         // Undef the macros which clash with raylib functions:
         #undef DrawText
         #undef DrawTextEx
+        #undef LoadImage
     #endif
 
     #define GLSL_VERSION 330
@@ -64,13 +65,18 @@ namespace jbx {
         Array<rl::Sound>     sounds;
         Array<rl::Font>      fonts;
 
+        // Temporary:
+        std::atomic<bool>    images_loaded;
+        Array<rl::Image>     images;
+
         Engine_Context()
         : clear_color({45, 45, 45, 255}),
           should_run(true),
           window_size({0, 0}),
           textures(MAX_TEXTURE_COUNT),
           sounds(MAX_SOUND_COUNT),
-          fonts(MAX_FONT_COUNT) {
+          fonts(MAX_FONT_COUNT),
+          images(2) {
         }
     };
 
@@ -89,6 +95,20 @@ namespace jbx {
         }
     )";
 
+
+    static void
+    resource_thread_fn() {
+        Sleep(1024);
+        Unique<Engine_Context>& context = get_context<Engine_Context>();
+        // Adding tilemap just to test it all out, even though it will be loaded on it's own
+        // later.
+        for (const std::string& image_name: {"colormap", "Crt_UV"}) {
+            // We just assume that only the resource thread will ever write to this array:
+            context->images.add(rl::LoadImage(image_path(image_name).c_str()));
+        }
+
+        context->images_loaded = true;
+    }
 
 
     void
@@ -176,22 +196,14 @@ namespace jbx {
         camera.fovy         = 45.0f;
         camera.projection   = rl::CAMERA_PERSPECTIVE;
 
+        std::thread resource_thread(resource_thread_fn);
+        resource_thread.detach();
+
         rl::Model plane = rl::LoadModelFromMesh(rl::GenMeshPlane(8.0f, 6.0f, 1, 1));
         plane.materials[0].maps[rl::MATERIAL_MAP_DIFFUSE].texture = model_texture.texture;
 
         rl::Model donut = rl::LoadModel(model_path_glb("donut-sprinkles").c_str());
-        rl::Texture2D colormap = rl::LoadTexture(image_path("colormap").c_str());
-
-        for (int i = 0; i < donut.materialCount; i++) {
-            rl::SetMaterialTexture(&donut.materials[i], rl::MATERIAL_MAP_DIFFUSE, colormap);
-        }
-
         rl::Model crt_monitor = rl::LoadModel(model_path_glb("crt2").c_str());
-        rl::Texture2D crt_colormap = rl::LoadTexture(image_path("crt_UV").c_str());
-
-        for (int i = 0; i < crt_monitor.materialCount; i++) {
-            rl::SetMaterialTexture(&crt_monitor.materials[i], rl::MATERIAL_MAP_DIFFUSE, crt_colormap);
-        }
 
         // Main loop:
         const f64 S_PER_FRAME = 1.0/config->desired_framerate;
@@ -229,6 +241,23 @@ namespace jbx {
 
             // Update the 3D camera:
             rl::UpdateCamera(&camera, rl::CAMERA_FREE);
+
+            // @temp: Check for any resources that need to be loaded in:
+            {
+                if (context->images_loaded) {
+                    rl::Texture2D colormap = rl::LoadTextureFromImage(context->images[0]);
+                    for (int i = 0; i < donut.materialCount; i++) {
+                        rl::SetMaterialTexture(&donut.materials[i], rl::MATERIAL_MAP_DIFFUSE, colormap);
+                    }
+
+                    colormap = rl::LoadTextureFromImage(context->images[1]);
+                    for (int i = 0; i < crt_monitor.materialCount; i++) {
+                        rl::SetMaterialTexture(&crt_monitor.materials[i], rl::MATERIAL_MAP_DIFFUSE, colormap);
+                    }
+
+                    context->images_loaded = false;
+                }
+            }
 
             // Render:
             context->should_run = !rl::WindowShouldClose();
